@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/activity_home_screen.xml" value="0.25" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
       </map>
     </option>
   </component>

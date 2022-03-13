@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Snow Remover Android</string>
+    <string name="title_activity_home_screen">HomeScreen</string>
+    <string name="title_home">Home</string>
+    <string name="title_person">Persons</string>
+    <string name="title_orders">Orders</string>
+    <string name="title_aboutus">About Us</string>
 </resources>
