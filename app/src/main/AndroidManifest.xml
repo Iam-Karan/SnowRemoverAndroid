@@ -10,9 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SnowRemoverAndroid">
         <activity
+            android:name=".SignInScreen"
+            android:exported="false" />
+        <activity
             android:name=".UserProfileActivity"
             android:exported="false"
-            android:theme="@style/Theme.SnowRemoverAndroid"/>
+            android:theme="@style/Theme.SnowRemoverAndroid" />
         <activity
             android:name=".HomeScreen"
             android:exported="true"
