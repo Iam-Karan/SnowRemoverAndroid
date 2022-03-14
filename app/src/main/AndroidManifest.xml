@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SnowRemoverAndroid">
         <activity
+            android:name=".SignUpScreen"
+            android:exported="false" />
+        <activity
             android:name=".SignInScreen"
             android:exported="false" />
         <activity
