@@ -16,7 +16,7 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="?actionBarSize"
         app:menu="@menu/bottom_nav_menu"
         android:background="@color/blue"
         app:backgroundColor="@color/blue"

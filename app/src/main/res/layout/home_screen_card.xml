@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/home_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="10dp"
+        android:outlineSpotShadowColor="@color/black"
+        app:cardElevation="10dp"
+        android:elevation="10dp"
+        android:clickable="true"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:layout_margin="10dp"
+        app:cardPreventCornerOverlap="false">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_background"
+            android:padding="10dp">
+            <ImageView
+                android:id="@+id/home_screen_image"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:src="@drawable/toolone"/>
+            <LinearLayout
+                android:layout_below="@+id/home_screen_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/home_screen_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Machine 1"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentStart="true"
+                    android:maxLines="1"/>
+
+                <TextView
+                    android:id="@+id/home_screen_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="$150"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"/>
+            </LinearLayout>
+        </RelativeLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>
