@@ -11,10 +11,12 @@
         android:theme="@style/Theme.SnowRemoverAndroid">
         <activity
             android:name=".SignUpScreen"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.SnowRemoverAndroid"/>
         <activity
             android:name=".SignInScreen"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.SnowRemoverAndroid"/>
         <activity
             android:name=".UserProfileActivity"
             android:exported="false"

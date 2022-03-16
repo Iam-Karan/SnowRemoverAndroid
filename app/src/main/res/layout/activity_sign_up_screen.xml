@@ -30,7 +30,7 @@
 
     <TextView
         android:visibility="invisible"
-        android:id="@+id/login_invalid_login"
+        android:id="@+id/signup_error_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Invalid email or password"
@@ -40,6 +40,7 @@
         tools:ignore="HardcodedText" />
 
     <EditText
+        android:id="@+id/signup_name"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:padding="10dip"
@@ -49,6 +50,7 @@
         android:inputType="text"/>
 
     <EditText
+        android:id="@+id/signup_email"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -59,6 +61,7 @@
         android:inputType="textEmailAddress"/>
 
     <EditText
+        android:id="@+id/signup_password"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -69,6 +72,7 @@
         android:inputType="textPassword"/>
 
     <EditText
+        android:id="@+id/signup_confirm_password"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -88,19 +92,19 @@
         tools:ignore="HardcodedText" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/login_btn"
+        android:id="@+id/signup_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:layout_marginTop="20dp"
-        android:text="Login"
+        android:text="Sign up"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:background="@drawable/pink_round_btn"
         tools:ignore="HardcodedText" />
 
     <com.shobhitpuri.custombuttons.GoogleSignInButton
-        android:id="@+id/login_with_google"
+        android:id="@+id/signup_with_google"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="55dp"
@@ -115,7 +119,7 @@
 
     <TextView
         android:clickable="true"
-        android:id="@+id/signup_btn"
+        android:id="@+id/signin_btn"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -123,7 +127,7 @@
         android:textColor="@color/white"
         android:textAlignment="center"
         android:textStyle="bold"
-        android:text="Create new Account"
+        android:text="Already have an accout? Sign In"
         android:focusable="true"
         tools:ignore="HardcodedText" />
 
