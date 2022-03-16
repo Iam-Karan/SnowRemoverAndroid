@@ -77,12 +77,13 @@
                 android:textStyle="bold"
                 android:textColor="@color/white"/>
             <EditText
+                android:id="@+id/user_name"
                 android:layout_weight="3"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:padding="10dip"
                 android:background="@drawable/rounded_edittext"
-                android:hint="Karan"
+                android:hint="User"
                 android:textColor="@color/black"
                 android:inputType="textEmailAddress"/>
         </LinearLayout>
@@ -99,15 +100,15 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/white"/>
-            <EditText
+            <TextView
+                android:id="@+id/user_email"
                 android:layout_weight="3"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:padding="10dip"
-                android:background="@drawable/rounded_edittext"
-                android:hint="Email Id"
-                android:textColor="@color/black"
-                android:inputType="textEmailAddress"/>
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
         </LinearLayout>
         <LinearLayout
             android:layout_marginTop="10dp"
@@ -123,14 +124,15 @@
                 android:textStyle="bold"
                 android:textColor="@color/white"/>
             <EditText
+                android:id="@+id/user_old_password"
                 android:layout_weight="3"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:padding="10dip"
                 android:background="@drawable/rounded_edittext"
-                android:hint="Password"
+                android:hint="Old Password"
                 android:textColor="@color/black"
-                android:inputType="textEmailAddress"/>
+                android:inputType="textPassword"/>
         </LinearLayout>
         <LinearLayout
             android:layout_marginTop="10dp"
@@ -147,6 +149,32 @@
                 android:textStyle="bold"
                 android:textColor="@color/white"/>
             <EditText
+                android:id="@+id/user_new_password"
+                android:layout_weight="3"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:padding="10dip"
+                android:background="@drawable/rounded_edittext"
+                android:hint="New Password"
+                android:textColor="@color/black"
+                android:inputType="textPassword"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:visibility="invisible"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"/>
+            <EditText
+                android:id="@+id/user_confirm_password"
                 android:layout_weight="3"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
@@ -154,11 +182,11 @@
                 android:background="@drawable/rounded_edittext"
                 android:hint="Confirm Password"
                 android:textColor="@color/black"
-                android:inputType="textEmailAddress"/>
+                android:inputType="textPassword"/>
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/login_btn"
+            android:id="@+id/user_update"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
