@@ -24,6 +24,7 @@ import com.snowremover.snowremoverandroid.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
@@ -66,9 +67,9 @@ public class HomeFragment extends Fragment {
                         List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
                         for (DocumentSnapshot d : list) {
                             String id = d.getId().toString();
-                            String name = d.getData().get("name").toString();
-                            String price = d.getData().get("price_numerical").toString();
-                            String imageUrl = d.getData().get("main_image").toString();
+                            String name = Objects.requireNonNull(d.getData().get("name")).toString();
+                            String price = Objects.requireNonNull(d.getData().get("price_numerical")).toString();
+                            String imageUrl = Objects.requireNonNull(d.getData().get("main_image")).toString();
                             ProductData data = new ProductData(id, name, imageUrl, price);
                             productItemData.add(data);
                         }
