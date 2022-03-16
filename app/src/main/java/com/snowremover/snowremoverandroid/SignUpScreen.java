@@ -44,6 +44,11 @@ public class SignUpScreen extends AppCompatActivity {
             validate();
         });
 
+        loginBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(getBaseContext(), SignInScreen.class);
+            startActivity(intent);
+        });
+
     }
 
     public void findId(){

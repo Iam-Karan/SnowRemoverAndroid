@@ -30,7 +30,7 @@
 
     <TextView
         android:visibility="invisible"
-        android:id="@+id/login_invalid_login"
+        android:id="@+id/signin_invalid_signin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Invalid email or password"
@@ -40,6 +40,7 @@
         tools:ignore="HardcodedText" />
 
     <EditText
+        android:id="@+id/signin_email"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:padding="10dip"
@@ -49,6 +50,7 @@
         android:inputType="textEmailAddress"/>
 
     <EditText
+        android:id="@+id/signin_password"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="60dp"

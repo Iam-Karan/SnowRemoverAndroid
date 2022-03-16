@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.snowremover.snowremoverandroid.HomeScreen;
 import com.snowremover.snowremoverandroid.R;
+import com.snowremover.snowremoverandroid.SignInScreen;
 import com.snowremover.snowremoverandroid.SignUpScreen;
 import com.snowremover.snowremoverandroid.UserProfileActivity;
 
@@ -38,7 +39,7 @@ public class OrderFragment extends Fragment {
         View view = inflater.inflate(R.layout.order_fragment, container, false);
         getUi(view);
         userInfoLayout.setOnClickListener(view1 -> {
-            Intent intent = new Intent(getContext(), SignUpScreen.class);
+            Intent intent = new Intent(getContext(), SignInScreen.class);
             startActivity(intent);
         });
         return view;
