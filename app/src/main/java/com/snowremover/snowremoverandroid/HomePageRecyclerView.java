@@ -23,6 +23,8 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class HomePageRecyclerView extends RecyclerView.Adapter<HomePageRecyclerView.MyViewHolder> {
 
@@ -59,7 +61,8 @@ public class HomePageRecyclerView extends RecyclerView.Adapter<HomePageRecyclerV
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         String itemName = productItemData.get(position).getName();
-        String itemPrice = "$"+productItemData.get(position).getPrice().toString();
+        String priceString = String.valueOf(productItemData.get(position).getPrice());
+        String itemPrice = "$"+priceString;
         StorageReference storageReference =  FirebaseStorage.getInstance().getReference("products/"+productItemData.get(position).getImage());
 
         storageReference.getDownloadUrl().addOnSuccessListener(uri ->
@@ -71,6 +74,45 @@ public class HomePageRecyclerView extends RecyclerView.Adapter<HomePageRecyclerV
         holder.itemName.setText(itemName);
         holder.itemPrice.setText(itemPrice);
 
+    }
+
+    public void search(String text, ArrayList<ProductData> itemsCopy) {
+        productItemData.clear();
+        if(text.isEmpty()){
+            productItemData.addAll(itemsCopy);
+        } else{
+            text = text.toLowerCase();
+            for(ProductData item: itemsCopy){
+                if(item.name.toLowerCase().contains(text) || item.type.toLowerCase().contains(text)){
+                    productItemData.add(item);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public void available(ArrayList<ProductData> itemsCopy){
+        productItemData.clear();
+        for(ProductData item: itemsCopy){
+            if(item.numOfUnit > 0){
+                productItemData.add(item);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public void lowToHigh(ArrayList<ProductData> itemsCopy){
+        productItemData.clear();
+        Collections.sort(itemsCopy, Comparator.comparing(ProductData::getPrice));
+        productItemData.addAll(itemsCopy);
+        notifyDataSetChanged();
+    }
+
+    public void highToLow(ArrayList<ProductData> itemsCopy){
+        productItemData.clear();
+        Collections.sort(itemsCopy, Comparator.comparing(ProductData::getPrice).reversed());
+        productItemData.addAll(itemsCopy);
+        notifyDataSetChanged();
     }
 
     @Override

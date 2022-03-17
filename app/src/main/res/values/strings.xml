@@ -5,4 +5,11 @@
     <string name="title_person">Persons</string>
     <string name="title_orders">Orders</string>
     <string name="title_aboutus">About Us</string>
+    <string-array name="dropdown_item">
+        <item>Select</item>
+        <item>Favourite</item>
+        <item>Available</item>
+        <item>Low to High</item>
+        <item>High to Low</item>
+    </string-array>
 </resources>

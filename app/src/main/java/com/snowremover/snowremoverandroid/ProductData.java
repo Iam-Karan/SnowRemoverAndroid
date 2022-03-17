@@ -5,13 +5,17 @@ public class ProductData {
     String id;
     String name;
     String image;
-    String price;
+    float price;
+    int numOfUnit;
+    String type;
 
-    public ProductData(String id, String name, String image, String price) {
+    public ProductData(String id, String name, String image, float price, int numOfUnit, String type) {
         this.id = id;
         this.name = name;
         this.image = image;
         this.price = price;
+        this.numOfUnit = numOfUnit;
+        this.type = type;
     }
 
     public String getId() {
@@ -38,11 +42,27 @@ public class ProductData {
         this.image = image;
     }
 
-    public String getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(float price) {
         this.price = price;
+    }
+
+    public int getNumOfUnit() {
+        return numOfUnit;
+    }
+
+    public void setNumOfUnit(int numOfUnit) {
+        this.numOfUnit = numOfUnit;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
