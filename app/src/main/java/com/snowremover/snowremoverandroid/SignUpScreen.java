@@ -1,18 +1,30 @@
 package com.snowremover.snowremoverandroid;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.shobhitpuri.custombuttons.GoogleSignInButton;
 
@@ -24,21 +36,34 @@ import java.util.regex.Pattern;
 
 public class SignUpScreen extends AppCompatActivity {
 
+    private static final int RC_SIGN_IN = 120;
+
     private EditText name, email, password, confirmPassword;
     private AppCompatButton signUpBtn;
     private GoogleSignInButton signupWithGoogle;
     private TextView loginBtn, errorText;
+
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
+    private GoogleSignInClient mGoogleSignInClient;
     private String uId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_screen);
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
-
         findId();
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("1050868759487-pd1g13mjamlmunstg5pboetrae94mtab.apps.googleusercontent.com")
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        signupWithGoogle.setOnClickListener(view -> signIn());
 
         signUpBtn.setOnClickListener(view -> {
             validate();
@@ -136,5 +161,79 @@ public class SignUpScreen extends AppCompatActivity {
     public void setToast(String msg){
         Toast toast = Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT);
         toast.show();
+    }
+
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Log.d("requestcode", ""+requestCode);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+            // Signed in successfully, show authenticated UI.
+            Log.d("TAG", "firebaseAuthWithGoogle:" + account.getId());
+            firebaseAuthWithGoogle(account.getIdToken(), account.getGivenName(), account.getEmail());
+        } catch (ApiException e) {
+            Log.w("TAG", "Google sign in failed", e);
+        }
+    }
+
+    private void firebaseAuthWithGoogle(String idToken, String name, String email) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d("TAG", "signInWithCredential:success");
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        String userId = user.getUid();
+
+                        DocumentReference documentReference = firestore.collection("users").document(userId);
+                        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = (DocumentSnapshot) task.getResult();
+                                    if (!document.exists()) {
+                                        DocumentReference documentReference = firestore.collection("users").document(userId);
+
+                                        Map<String, String> userGoogle = new HashMap<>();
+                                        userGoogle.put("name", name);
+                                        userGoogle.put("email", email);
+                                        userGoogle.put("uid", userId);
+
+
+                                        documentReference.set(userGoogle).addOnSuccessListener(unused -> {
+                                            Intent intent = new Intent(getBaseContext(), HomeScreen.class);
+                                            startActivity(intent);
+                                        }).addOnFailureListener(e -> Log.d("error", e.toString()));
+                                    }
+                                    Intent intent = new Intent(getBaseContext(), HomeScreen.class);
+                                    startActivity(intent);
+
+                                } else {
+                                    Log.d("error", "get failed with ", task.getException());
+                                }
+                            }
+                        }).addOnFailureListener(e -> Log.d("error", e.toString()));
+
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w("TAG", "signInWithCredential:failure", task.getException());
+                    }
+                });
     }
 }
