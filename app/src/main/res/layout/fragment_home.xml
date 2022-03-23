@@ -52,17 +52,87 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:animateLayoutChanges="true">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginBottom="?actionBarSize"
-            android:id="@+id/home_recyclerview"
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:animateLayoutChanges="true">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/home_card"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                app:cardCornerRadius="10dp"
+                android:outlineSpotShadowColor="@color/black"
+                app:cardElevation="10dp"
+                android:elevation="10dp"
+                android:clickable="true"
+                android:clipToPadding="false"
+                android:clipChildren="false"
+                android:layout_margin="10dp"
+                app:cardPreventCornerOverlap="false">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/card_background"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_weight="2"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/home_temp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="23c"
+                                android:textColor="@color/white"
+                                android:textSize="24dp"
+                                android:textStyle="bold"
+                                android:layout_marginLeft="10dp"/>
+                            <TextView
+                                android:id="@+id/home_location"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Montreal, Canada"
+                                android:textColor="@color/white"
+                                android:textSize="16dp"
+                                android:textStyle="bold"
+                                android:layout_marginLeft="10dp"/>
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/home_weather_image"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/snowborder"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginBottom="?actionBarSize"
+                android:id="@+id/home_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

@@ -168,7 +168,7 @@ public class SignInScreen extends AppCompatActivity {
                                         DocumentReference documentReference = firestore.collection("users").document(userId);
 
                                         Map<String, String> userGoogle = new HashMap<>();
-                                        userGoogle.put("name", name);
+                                        userGoogle.put("firstName", name);
                                         userGoogle.put("email", email);
                                         userGoogle.put("uid", userId);
 
