@@ -6,7 +6,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -25,8 +27,8 @@ import java.util.regex.Pattern;
 
 public class UserProfileActivity extends AppCompatActivity {
 
-    private ImageButton backButton, logoutButton;
-    private TextView email;
+    private ImageButton backButton, logoutButton, opON, opOFF, npON, npOFF, cpON, cpOFF;
+    private TextView email, errortext;
     private EditText name, oldPasword, newPassword, confirmPassword;
     private AppCompatButton updateBtn;
     private FirebaseFirestore firestore;
@@ -73,6 +75,37 @@ public class UserProfileActivity extends AppCompatActivity {
             Intent intent = new Intent(getBaseContext(), HomeScreen.class);
             startActivity(intent);
         });
+
+        opON.setOnClickListener(view -> {
+            oldPasword.setTransformationMethod(null);
+            opON.setVisibility(View.GONE);
+            opOFF.setVisibility(View.VISIBLE);
+        });
+        opOFF.setOnClickListener(view -> {
+            oldPasword.setTransformationMethod(new PasswordTransformationMethod());
+            opON.setVisibility(View.VISIBLE);
+            opOFF.setVisibility(View.GONE);
+        });
+        npON.setOnClickListener(view -> {
+            newPassword.setTransformationMethod(null);
+            npON.setVisibility(View.GONE);
+            npOFF.setVisibility(View.VISIBLE);
+        });
+        npOFF.setOnClickListener(view -> {
+            newPassword.setTransformationMethod(new PasswordTransformationMethod());
+            npON.setVisibility(View.VISIBLE);
+            npOFF.setVisibility(View.GONE);
+        });
+        cpON.setOnClickListener(view -> {
+            confirmPassword.setTransformationMethod(null);
+            cpON.setVisibility(View.GONE);
+            cpOFF.setVisibility(View.VISIBLE);
+        });
+        cpOFF.setOnClickListener(view -> {
+            confirmPassword.setTransformationMethod(new PasswordTransformationMethod());
+            cpON.setVisibility(View.VISIBLE);
+            cpOFF.setVisibility(View.GONE);
+        });
     }
 
     public void getUi(){
@@ -84,6 +117,13 @@ public class UserProfileActivity extends AppCompatActivity {
         newPassword = findViewById(R.id.user_new_password);
         confirmPassword = findViewById(R.id.user_confirm_password);
         updateBtn = findViewById(R.id.user_update);
+        errortext = findViewById(R.id.user_profile_error);
+        opON = findViewById(R.id.old_password_visibility_on);
+        opOFF = findViewById(R.id.old_password_visibility_off);
+        npON = findViewById(R.id.new_password_visibility_on);
+        npOFF = findViewById(R.id.new_password_visibility_off);
+        cpON = findViewById(R.id.confirm_password_visibility_on);
+        cpOFF = findViewById(R.id.confirm_password_visibility_off);
     }
 
     public void setData(){
@@ -111,12 +151,14 @@ public class UserProfileActivity extends AppCompatActivity {
     public void UpdateName(){
         if(!updateNameText.isEmpty()){
             firestore.collection("users").document(uId)
-                    .update("name", updateNameText)
+                    .update("firstName", updateNameText)
                     .addOnSuccessListener(unused -> {
                         Toast.makeText(getApplicationContext(), "Name updated successful!", Toast.LENGTH_SHORT).show();
                         setData();
                     }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show());
         }else {
+            errortext.setText("Name must not be empty");
+            errortext.setVisibility(View.VISIBLE);
             name.setError("Name must not be empty!");
         }
     }
@@ -126,9 +168,13 @@ public class UserProfileActivity extends AppCompatActivity {
             if(newPasswordText.equals(confirmPasswordText)){
                 UpdatePasword();
             } else {
+                errortext.setText("Confirm password not match");
+                errortext.setVisibility(View.VISIBLE);
                 confirmPassword.setError("Confirm password not match!");
             }
         }else {
+            errortext.setText("New password is too weak");
+            errortext.setVisibility(View.VISIBLE);
             newPassword.setError("New password must not be empty!");
         }
     }
@@ -162,6 +208,8 @@ public class UserProfileActivity extends AppCompatActivity {
                                     }
                                 });
                     } else {
+                        errortext.setText("Wrong old Password");
+                        errortext.setVisibility(View.VISIBLE);
                         oldPasword.setError("Wrong Password!");
                     }
                 });

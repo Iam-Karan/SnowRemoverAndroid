@@ -63,6 +63,16 @@
         android:orientation="vertical"
         android:padding="10dp">
 
+        <TextView
+            android:visibility="invisible"
+            android:id="@+id/user_profile_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Invalid email or password"
+            android:textColor="@color/red"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
         <LinearLayout
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
@@ -123,16 +133,43 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/white"/>
-            <EditText
-                android:id="@+id/user_old_password"
+            <LinearLayout
                 android:layout_weight="3"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:padding="10dip"
-                android:background="@drawable/rounded_edittext"
-                android:hint="Old Password"
-                android:textColor="@color/black"
-                android:inputType="textPassword"/>
+                android:orientation="horizontal"
+                android:background="@drawable/rounded_edittext">
+                <EditText
+                    android:layout_weight="9"
+                    android:id="@+id/user_old_password"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:padding="10dip"
+                    android:hint="Password"
+                    android:textColor="@color/black"
+                    android:inputType="textPassword"/>
+                <ImageButton
+                    android:id="@+id/old_password_visibility_on"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:visibility="visible"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_round_visibility_24"/>
+                <ImageButton
+                    android:id="@+id/old_password_visibility_off"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:visibility="gone"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_round_visibility_off_24"/>
+            </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_marginTop="10dp"
@@ -148,16 +185,43 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/white"/>
-            <EditText
-                android:id="@+id/user_new_password"
+            <LinearLayout
                 android:layout_weight="3"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:padding="10dip"
-                android:background="@drawable/rounded_edittext"
-                android:hint="New Password"
-                android:textColor="@color/black"
-                android:inputType="textPassword"/>
+                android:orientation="horizontal"
+                android:background="@drawable/rounded_edittext">
+                <EditText
+                    android:layout_weight="9"
+                    android:id="@+id/user_new_password"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:padding="10dip"
+                    android:hint="Password"
+                    android:textColor="@color/black"
+                    android:inputType="textPassword"/>
+                <ImageButton
+                    android:id="@+id/new_password_visibility_on"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:visibility="visible"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_round_visibility_24"/>
+                <ImageButton
+                    android:id="@+id/new_password_visibility_off"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:visibility="gone"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_round_visibility_off_24"/>
+            </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_marginTop="10dp"
@@ -173,16 +237,45 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/white"/>
-            <EditText
-                android:id="@+id/user_confirm_password"
+
+            <LinearLayout
                 android:layout_weight="3"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
-                android:padding="10dip"
-                android:background="@drawable/rounded_edittext"
-                android:hint="Confirm Password"
-                android:textColor="@color/black"
-                android:inputType="textPassword"/>
+                android:orientation="horizontal"
+                android:background="@drawable/rounded_edittext">
+                <EditText
+                    android:layout_weight="9"
+                    android:id="@+id/user_confirm_password"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:padding="10dip"
+                    android:hint="Password"
+                    android:textColor="@color/black"
+                    android:inputType="textPassword"/>
+                <ImageButton
+                    android:id="@+id/confirm_password_visibility_on"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:visibility="visible"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_round_visibility_24"/>
+                <ImageButton
+                    android:id="@+id/confirm_password_visibility_off"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:visibility="gone"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_round_visibility_off_24"/>
+            </LinearLayout>
+
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton

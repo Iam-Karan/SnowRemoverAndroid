@@ -72,7 +72,7 @@
             android:layout_gravity="center_vertical"
             android:visibility="visible"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:src="@drawable/ic_round_visibility_24"/>
         <ImageView
             android:id="@+id/signin_password_visibility_off"
@@ -81,7 +81,7 @@
             android:layout_gravity="center_vertical"
             android:visibility="gone"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:src="@drawable/ic_round_visibility_off_24"/>
     </LinearLayout>
 
