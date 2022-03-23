@@ -6,9 +6,11 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +44,7 @@ public class SignUpScreen extends AppCompatActivity {
     private AppCompatButton signUpBtn;
     private GoogleSignInButton signupWithGoogle;
     private TextView loginBtn, errorText;
+    private ImageView passwordVisible, passwordInVisible, confirmPasswordVisible, confirmPasswordInVisible;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore firestore;
@@ -74,6 +77,30 @@ public class SignUpScreen extends AppCompatActivity {
             startActivity(intent);
         });
 
+        passwordVisible.setOnClickListener(view -> {
+            password.setTransformationMethod(null);
+            passwordVisible.setVisibility(View.GONE);
+            passwordInVisible.setVisibility(View.VISIBLE);
+        });
+
+        passwordInVisible.setOnClickListener(view -> {
+            password.setTransformationMethod(new PasswordTransformationMethod());
+            passwordVisible.setVisibility(View.VISIBLE);
+            passwordInVisible.setVisibility(View.GONE);
+        });
+
+        confirmPasswordVisible.setOnClickListener(view -> {
+            confirmPassword.setTransformationMethod(null);
+            confirmPasswordInVisible.setVisibility(View.VISIBLE);
+            confirmPasswordVisible.setVisibility(View.GONE);
+        });
+
+        confirmPasswordInVisible.setOnClickListener(view -> {
+            confirmPassword.setTransformationMethod(new PasswordTransformationMethod());
+            confirmPasswordVisible.setVisibility(View.VISIBLE);
+            confirmPasswordInVisible.setVisibility(View.GONE);
+        });
+
     }
 
     public void findId(){
@@ -85,6 +112,10 @@ public class SignUpScreen extends AppCompatActivity {
         signupWithGoogle = findViewById(R.id.signup_with_google);
         loginBtn = findViewById(R.id.signin_btn);
         errorText = findViewById(R.id.signup_error_text);
+        passwordVisible = findViewById(R.id.signup_password_visibility_on);
+        passwordInVisible = findViewById(R.id.signup_password_visibility_off);
+        confirmPasswordVisible = findViewById(R.id.signup_confirm_password_visibility_on);
+        confirmPasswordInVisible = findViewById(R.id.signup_confirm_password_visibility_off);
     }
 
     public void validate(){
@@ -106,17 +137,25 @@ public class SignUpScreen extends AppCompatActivity {
                         creatUser(nameText, emailText, passwordText);
                     }
                     else {
+                        errorText.setText(passwordToast);
+                        errorText.setVisibility(View.VISIBLE);
                         confirmPassword.setError(passwordToast);
                     }
                 }
                 else {
+                    errorText.setText(emptyPasswordToast);
+                    errorText.setVisibility(View.VISIBLE);
                     password.setError(emptyPasswordToast);
                 }
             }
             else {
+                errorText.setText(emailToast);
+                errorText.setVisibility(View.VISIBLE);
                 email.setError(emailToast);
             }
         } else {
+            errorText.setText(nameToast);
+            errorText.setVisibility(View.VISIBLE);
             name.setError(nameToast);
         }
     }
@@ -151,9 +190,14 @@ public class SignUpScreen extends AppCompatActivity {
                 user.put("uid", uId);
 
                 documentReference.set(user).addOnSuccessListener(unused -> {
-                    Intent intent = new Intent(getBaseContext(), HomeScreen.class);
+                    Toast.makeText(getApplicationContext(), "Sign Up successfully!", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getBaseContext(), SignInScreen.class);
                     startActivity(intent);
-                }).addOnFailureListener(e -> setToast(e.toString()));
+                }).addOnFailureListener(e -> {
+                    setToast(e.toString());
+                    errorText.setText("Email id already used!");
+                    errorText.setVisibility(View.VISIBLE);
+                });
             }
         }).addOnFailureListener(e -> setToast(e.toString()));
     }
@@ -217,10 +261,12 @@ public class SignUpScreen extends AppCompatActivity {
 
 
                                         documentReference.set(userGoogle).addOnSuccessListener(unused -> {
+                                            Toast.makeText(getApplicationContext(), "Login successfully!", Toast.LENGTH_LONG).show();
                                             Intent intent = new Intent(getBaseContext(), HomeScreen.class);
                                             startActivity(intent);
                                         }).addOnFailureListener(e -> Log.d("error", e.toString()));
                                     }
+                                    Toast.makeText(getApplicationContext(), "Login successfully!", Toast.LENGTH_LONG).show();
                                     Intent intent = new Intent(getBaseContext(), HomeScreen.class);
                                     startActivity(intent);
 

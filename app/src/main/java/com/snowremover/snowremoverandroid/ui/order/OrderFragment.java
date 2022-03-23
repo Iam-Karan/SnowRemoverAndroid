@@ -21,10 +21,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.snowremover.snowremoverandroid.HomeScreen;
 import com.snowremover.snowremoverandroid.R;
 import com.snowremover.snowremoverandroid.SignInScreen;
-import com.snowremover.snowremoverandroid.SignUpScreen;
 import com.snowremover.snowremoverandroid.UserProfileActivity;
 
 import java.util.Objects;
@@ -89,7 +87,7 @@ public class OrderFragment extends Fragment {
                 DocumentSnapshot document = task.getResult();
                 assert document != null;
                 if (document.exists()) {
-                    String nameText = Objects.requireNonNull(document.getData().get("name")).toString();
+                    String nameText = Objects.requireNonNull(document.getData().get("firstName")).toString();
 
                     userName.setText(nameText);
 

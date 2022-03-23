@@ -60,27 +60,77 @@
         android:textColor="@color/black"
         android:inputType="textEmailAddress"/>
 
-    <EditText
-        android:id="@+id/signup_password"
-        android:layout_marginTop="10dp"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:padding="10dip"
+        android:orientation="horizontal"
         android:background="@drawable/rounded_edittext"
-        android:hint="Password"
-        android:textColor="@color/black"
-        android:inputType="textPassword"/>
+        android:layout_marginTop="10dp">
+        <EditText
+            android:layout_weight="9"
+            android:id="@+id/signup_password"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:padding="10dip"
+            android:hint="Password"
+            android:textColor="@color/black"
+            android:inputType="textPassword"/>
+        <ImageView
+            android:id="@+id/signup_password_visibility_on"
+            android:layout_weight="1"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center_vertical"
+            android:visibility="visible"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_round_visibility_24"/>
+        <ImageView
+            android:id="@+id/signup_password_visibility_off"
+            android:layout_weight="1"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_round_visibility_off_24"/>
+    </LinearLayout>
 
-    <EditText
-        android:id="@+id/signup_confirm_password"
-        android:layout_marginTop="10dp"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:padding="10dip"
+        android:orientation="horizontal"
         android:background="@drawable/rounded_edittext"
-        android:hint="Confirm Password"
-        android:textColor="@color/black"
-        android:inputType="textPassword"/>
+        android:layout_marginTop="10dp">
+        <EditText
+            android:layout_weight="9"
+            android:id="@+id/signup_confirm_password"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:padding="10dip"
+            android:hint="Confirm Password"
+            android:textColor="@color/black"
+            android:inputType="textPassword"/>
+        <ImageView
+            android:id="@+id/signup_confirm_password_visibility_on"
+            android:layout_weight="1"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center_vertical"
+            android:visibility="visible"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_round_visibility_24"/>
+        <ImageView
+            android:id="@+id/signup_confirm_password_visibility_off"
+            android:layout_weight="1"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_round_visibility_off_24"/>
+    </LinearLayout>
     <TextView
         android:visibility="gone"
         android:layout_marginStart="10dp"

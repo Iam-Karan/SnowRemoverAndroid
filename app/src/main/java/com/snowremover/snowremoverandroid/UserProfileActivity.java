@@ -92,7 +92,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 DocumentSnapshot document = task.getResult();
                 assert document != null;
                 if (document.exists()) {
-                    nameText = Objects.requireNonNull(document.getData().get("name")).toString();
+                    nameText = Objects.requireNonNull(document.getData().get("firstName")).toString();
                     String emailText = Objects.requireNonNull(document.getData().get("email")).toString();
 
                     name.setText(nameText);
