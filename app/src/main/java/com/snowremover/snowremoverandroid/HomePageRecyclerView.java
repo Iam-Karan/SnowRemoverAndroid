@@ -1,5 +1,6 @@
 package com.snowremover.snowremoverandroid;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -59,7 +60,7 @@ public class HomePageRecyclerView extends RecyclerView.Adapter<HomePageRecyclerV
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         String itemName = productItemData.get(position).getName();
         String priceString = String.valueOf(productItemData.get(position).getPrice());
         String itemPrice = "$"+priceString;
@@ -73,6 +74,11 @@ public class HomePageRecyclerView extends RecyclerView.Adapter<HomePageRecyclerV
 
         holder.itemName.setText(itemName);
         holder.itemPrice.setText(itemPrice);
+        holder.card.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), ProductDetailActivity.class);
+            intent.putExtra("ProductId", productItemData.get(position).getId());
+            view.getContext().startActivity(intent);
+        });
 
     }
 

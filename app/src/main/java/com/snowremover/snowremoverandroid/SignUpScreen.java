@@ -185,7 +185,7 @@ public class SignUpScreen extends AppCompatActivity {
                 DocumentReference documentReference = firestore.collection("users").document(uId);
 
                 Map<String, String> user = new HashMap<>();
-                user.put("name", name);
+                user.put("firstName", name);
                 user.put("email", email);
                 user.put("uid", uId);
 
