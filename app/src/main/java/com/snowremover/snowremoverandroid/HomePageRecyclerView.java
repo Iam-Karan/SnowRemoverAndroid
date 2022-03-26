@@ -73,6 +73,12 @@ public class HomePageRecyclerView extends RecyclerView.Adapter<HomePageRecyclerV
                     Glide.with(context)
                             .load(uri)
                             .into(holder.itemImage));
+
+            holder.card.setOnClickListener(view -> {
+                Intent intent = new Intent(view.getContext(), PersonDetailActivity.class);
+                intent.putExtra("PersonId", productItemData.get(position).getId());
+                view.getContext().startActivity(intent);
+            });
         }else {
             StorageReference storageReference =  FirebaseStorage.getInstance().getReference("products/"+productItemData.get(position).getImage());
 
