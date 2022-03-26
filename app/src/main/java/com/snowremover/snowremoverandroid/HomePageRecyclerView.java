@@ -64,21 +64,29 @@ public class HomePageRecyclerView extends RecyclerView.Adapter<HomePageRecyclerV
         String itemName = productItemData.get(position).getName();
         String priceString = String.valueOf(productItemData.get(position).getPrice());
         String itemPrice = "$"+priceString;
-        StorageReference storageReference =  FirebaseStorage.getInstance().getReference("products/"+productItemData.get(position).getImage());
-
-        storageReference.getDownloadUrl().addOnSuccessListener(uri ->
-                Glide.with(context)
-                .load(uri)
-                .into(holder.itemImage));
-
-
         holder.itemName.setText(itemName);
         holder.itemPrice.setText(itemPrice);
-        holder.card.setOnClickListener(view -> {
-            Intent intent = new Intent(view.getContext(), ProductDetailActivity.class);
-            intent.putExtra("ProductId", productItemData.get(position).getId());
-            view.getContext().startActivity(intent);
-        });
+        if(productItemData.get(position).getType().equals("person")){
+            StorageReference storageReference =  FirebaseStorage.getInstance().getReference("personimages/"+productItemData.get(position).getImage());
+
+            storageReference.getDownloadUrl().addOnSuccessListener(uri ->
+                    Glide.with(context)
+                            .load(uri)
+                            .into(holder.itemImage));
+        }else {
+            StorageReference storageReference =  FirebaseStorage.getInstance().getReference("products/"+productItemData.get(position).getImage());
+
+            storageReference.getDownloadUrl().addOnSuccessListener(uri ->
+                    Glide.with(context)
+                            .load(uri)
+                            .into(holder.itemImage));
+
+            holder.card.setOnClickListener(view -> {
+                Intent intent = new Intent(view.getContext(), ProductDetailActivity.class);
+                intent.putExtra("ProductId", productItemData.get(position).getId());
+                view.getContext().startActivity(intent);
+            });
+        }
 
     }
 
