@@ -112,7 +112,7 @@ public class PersonFragment extends Fragment {
         });
 
         productItemData = new ArrayList<>();
-        setPersonsInfo();
+         setPersonsInfo();
         return view;
     }
 

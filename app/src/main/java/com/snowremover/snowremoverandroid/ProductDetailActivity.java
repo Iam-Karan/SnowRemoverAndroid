@@ -45,6 +45,8 @@ public class ProductDetailActivity extends AppCompatActivity {
     String uId;
     int cartCount = 0;
     int count = 1;
+    String name;
+    String imageurl;
     ArrayList<String> productIds = new ArrayList<>();
     FirebaseFirestore firestore;
 
@@ -106,10 +108,7 @@ public class ProductDetailActivity extends AppCompatActivity {
             youTubePlayerView.setVisibility(View.VISIBLE);
         });
 
-        backButton.setOnClickListener(view -> {
-            Intent backIntent = new Intent(getBaseContext(), HomeScreen.class);
-            startActivity(backIntent);
-        });
+        backButton.setOnClickListener(view -> onBackPressed());
 
     }
     public void findID(){
@@ -154,7 +153,8 @@ public class ProductDetailActivity extends AppCompatActivity {
                             youTubePlayer.cueVideo(finalUrl, 0);
                         }
                     });
-
+                    name = document.getData().get("name").toString();
+                    imageurl = "products/"+document.getData().get("main_image");
                     productName.setText(document.getData().get("name").toString());
                     productDescription.setText(document.getData().get("description").toString());
                     productPrice.setText("$"+document.getData().get("price_numerical").toString());
@@ -204,7 +204,9 @@ public class ProductDetailActivity extends AppCompatActivity {
                                     String id = document.getData().get("id").toString();
                                     String type = document.getData().get("type").toString();
                                     String quantity = document.getData().get("quantity").toString();
-                                    CartModel data = new CartModel(id, type, quantity);
+                                    String name = document.getData().get("name").toString();
+                                    String image = document.getData().get("image").toString();
+                                    CartModel data = new CartModel(id, type, quantity, name, image);
                                     if(id.equals(prductId)){
                                         cartCount = Integer.parseInt(quantity);
                                     }
@@ -235,6 +237,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         product.put("id", prductId);
         product.put("quantity", ""+count);
         product.put("type", "products");
+        product.put("name", name);
+        product.put("image", imageurl);
         documentReference.set(product).addOnSuccessListener(unused -> {
             count = 1;
             productQuantity.setText(""+count);
@@ -250,6 +254,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         product.put("id", prductId);
         product.put("quantity", ""+updatedItemCount);
         product.put("type", "products");
+        product.put("name", name);
+        product.put("image", imageurl);
         firestore.collection("users").document(uId).collection("cart").document(prductId)
                 .update(product)
                 .addOnSuccessListener(unused -> {

@@ -36,6 +36,8 @@ public class PersonDetailActivity extends AppCompatActivity {
     FirebaseUser mFirebaseUser;
     String personId;
     String uId;
+    String name;
+    String imageurl;
     ArrayList<String> personIds = new ArrayList<>();
     FirebaseFirestore firestore;
     @Override
@@ -113,6 +115,8 @@ public class PersonDetailActivity extends AppCompatActivity {
                                     .load(uri)
                                     .into(personImage));
 
+                    name = document.getData().get("name").toString();
+                    imageurl = "personimages/"+document.getData().get("imageurl");
                     personName.setText(document.getData().get("name").toString());
                     personDescription.setText(document.getData().get("description").toString());
                     personPrice.setText("$ 0.00");
@@ -165,7 +169,9 @@ public class PersonDetailActivity extends AppCompatActivity {
                                     String id = document.getData().get("id").toString();
                                     String type = document.getData().get("type").toString();
                                     String quantity = document.getData().get("quantity").toString();
-                                    CartModel data = new CartModel(id, type, quantity);
+                                    String cartName = document.getData().get("name").toString();
+                                    String cartImageurl = "personimages/"+document.getData().get("imageurl");
+                                    CartModel data = new CartModel(id, type, quantity, cartName, cartImageurl);
                                     personIds.add(data.getId());
                                 }
                             }
@@ -193,6 +199,8 @@ public class PersonDetailActivity extends AppCompatActivity {
         product.put("id", personId);
         product.put("quantity", "1");
         product.put("type", "person");
+        product.put("name", name);
+        product.put("image", imageurl);
         documentReference.set(product).addOnSuccessListener(unused -> {
             Toast.makeText(getApplicationContext(), "Person Added successfully!", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show());
@@ -203,7 +211,10 @@ public class PersonDetailActivity extends AppCompatActivity {
 
         Map<String, String> product = new HashMap<>();
         product.put("id", personId);
+         product.put("quantity", "1");
         product.put("type", "person");
+         product.put("name", name);
+         product.put("image", imageurl);
         documentReference.set(product).addOnSuccessListener(unused -> Toast.makeText(getApplicationContext(), "Item Added successfully!", Toast.LENGTH_SHORT).show()).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show());
     }
 

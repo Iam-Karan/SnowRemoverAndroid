@@ -5,11 +5,15 @@ public class CartModel {
     String id;
     String type;
     String quantity;
+    String name;
+    String imageUrl;
 
-    public CartModel(String id, String type, String quantity) {
+    public CartModel(String id, String type, String quantity, String name, String imageUrl) {
         this.id = id;
         this.type = type;
         this.quantity = quantity;
+        this.name = name;
+        this.imageUrl = imageUrl;
     }
 
     public String getId() {
@@ -34,5 +38,21 @@ public class CartModel {
 
     public void setQuantity(String quantity) {
         this.quantity = quantity;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
