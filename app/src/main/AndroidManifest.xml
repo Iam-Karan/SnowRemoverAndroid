@@ -15,13 +15,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SnowRemoverAndroid">
         <activity
+            android:theme="@style/Theme.SnowRemoverAndroid"
+            android:name=".admin.AdminMainActivity"
+            android:exported="false"
+            android:label="@string/title_activity_admin_main" />
+        <activity
             android:name=".CartActivity"
             android:exported="false"
-            android:theme="@style/Theme.SnowRemoverAndroid"/>
+            android:theme="@style/Theme.SnowRemoverAndroid" />
         <activity
             android:name=".PersonDetailActivity"
             android:exported="false"
-            android:theme="@style/Theme.SnowRemoverAndroid"/>
+            android:theme="@style/Theme.SnowRemoverAndroid" />
         <activity
             android:name=".ProductDetailActivity"
             android:exported="false"

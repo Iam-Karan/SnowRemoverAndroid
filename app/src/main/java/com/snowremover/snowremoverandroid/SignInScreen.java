@@ -31,6 +31,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.shobhitpuri.custombuttons.GoogleSignInButton;
+import com.snowremover.snowremoverandroid.admin.AdminMainActivity;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Document;
@@ -113,9 +114,36 @@ public class SignInScreen extends AppCompatActivity {
     public void loginUser(String email, String password){
         mAuth.signInWithEmailAndPassword(email, password).addOnSuccessListener(authResult -> {
             errorText.setVisibility(View.GONE);
-            Toast.makeText(getApplicationContext(), "Login successfully!", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(getBaseContext(), HomeScreen.class);
-            startActivity(intent);
+
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            firestore = FirebaseFirestore.getInstance();
+            FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
+            String uId = mFirebaseUser.getUid();
+
+            firestore.collection("users").document(uId).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    assert document != null;
+                    if (document.exists()) {
+                        String type =  Objects.requireNonNull(document.getData().get("type")).toString();
+                        if(type.equals("Admin")){
+                            Toast.makeText(getApplicationContext(), "Welcome Admin!", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(getBaseContext(), AdminMainActivity.class);
+                            startActivity(intent);
+                        }else{
+                            Toast.makeText(getApplicationContext(), "Login successfully!", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(getBaseContext(), HomeScreen.class);
+                            startActivity(intent);
+                        }
+
+                    } else {
+                        Log.d("document Not Found", "No such document");
+                    }
+                } else {
+                    Log.d("error", "get failed with ", task.getException());
+                }
+            }).addOnFailureListener(e -> Log.d("error", e.toString()));
+
         }).addOnFailureListener(e -> errorText.setVisibility(View.VISIBLE));
     }
 
