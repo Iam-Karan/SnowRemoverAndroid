@@ -125,7 +125,7 @@ public class SignInScreen extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     assert document != null;
                     if (document.exists()) {
-                        String type =  Objects.requireNonNull(document.getData().get("type")).toString();
+                        String type =  document.getData().get("type").toString();
                         if(type.equals("Admin")){
                             Toast.makeText(getApplicationContext(), "Welcome Admin!", Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(getBaseContext(), AdminMainActivity.class);
@@ -199,7 +199,7 @@ public class SignInScreen extends AppCompatActivity {
                                         userGoogle.put("firstName", name);
                                         userGoogle.put("email", email);
                                         userGoogle.put("uid", userId);
-
+                                        userGoogle.put("type", "Customer");
 
                                         documentReference.set(userGoogle).addOnSuccessListener(unused -> {
                                             Toast.makeText(getApplicationContext(), "Login successfully!", Toast.LENGTH_LONG).show();

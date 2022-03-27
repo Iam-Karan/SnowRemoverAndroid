@@ -67,12 +67,12 @@ public class UserProfileActivity extends AppCompatActivity {
         });
 
         backButton.setOnClickListener(view -> {
-            Intent intent = new Intent(getBaseContext(), HomeScreen.class);
-            startActivity(intent);
+            onBackPressed();
         });
         logoutButton.setOnClickListener(view -> {
             FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(getBaseContext(), HomeScreen.class);
+            Toast.makeText(getApplicationContext(), "Sign out successfully!", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getApplicationContext(), HomeScreen.class);
             startActivity(intent);
         });
 

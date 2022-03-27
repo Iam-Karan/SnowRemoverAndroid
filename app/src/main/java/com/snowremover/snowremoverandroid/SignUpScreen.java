@@ -188,6 +188,7 @@ public class SignUpScreen extends AppCompatActivity {
                 user.put("firstName", name);
                 user.put("email", email);
                 user.put("uid", uId);
+                user.put("type", "Customer");
 
                 documentReference.set(user).addOnSuccessListener(unused -> {
                     Toast.makeText(getApplicationContext(), "Sign Up successfully!", Toast.LENGTH_LONG).show();
@@ -258,7 +259,7 @@ public class SignUpScreen extends AppCompatActivity {
                                         userGoogle.put("firstName", name);
                                         userGoogle.put("email", email);
                                         userGoogle.put("uid", userId);
-
+                                        userGoogle.put("type", "Customer");
 
                                         documentReference.set(userGoogle).addOnSuccessListener(unused -> {
                                             Toast.makeText(getApplicationContext(), "Login successfully!", Toast.LENGTH_LONG).show();

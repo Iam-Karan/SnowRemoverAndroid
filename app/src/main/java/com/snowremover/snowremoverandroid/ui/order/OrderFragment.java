@@ -60,12 +60,9 @@ public class OrderFragment extends Fragment {
 
         getUi(view);
 
-        cartBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), CartActivity.class);
-                startActivity(intent);
-            }
+        cartBtn.setOnClickListener(view12 -> {
+            Intent intent = new Intent(getContext(), CartActivity.class);
+            startActivity(intent);
         });
 
         userInfoLayout.setOnClickListener(view1 -> {
