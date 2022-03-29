@@ -1,4 +1,4 @@
-package com.snowremover.snowremoverandroid;
+package com.snowremover.snowremoverandroid.admin;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
@@ -22,19 +21,21 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.snowremover.snowremoverandroid.CartModel;
+import com.snowremover.snowremoverandroid.PersonDetailActivity;
+import com.snowremover.snowremoverandroid.ProductDetailActivity;
+import com.snowremover.snowremoverandroid.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
-public class CartAdapterRecyclerView extends RecyclerView.Adapter<CartAdapterRecyclerView.CartViewHolder>{
+public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapter.CartViewHolder>{
 
     private final ArrayList<CartModel> cartProductData;
     private Context context;
     FirebaseFirestore firestore;
     String uId;
 
-    public CartAdapterRecyclerView(ArrayList<CartModel> cartProductData) {
+    public AdminProductAdapter(ArrayList<CartModel> cartProductData) {
         this.cartProductData = cartProductData;
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -45,10 +46,11 @@ public class CartAdapterRecyclerView extends RecyclerView.Adapter<CartAdapterRec
 
 
     public class CartViewHolder extends RecyclerView.ViewHolder{
-        private MaterialCardView card;
-        private ImageView image;
-        private TextView name, quantity;
-        private AppCompatButton remove;
+        private final MaterialCardView card;
+        private final ImageView image;
+        private final TextView name;
+        private final TextView quantity;
+        private final AppCompatButton remove;
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.cart_product_image);
@@ -62,20 +64,20 @@ public class CartAdapterRecyclerView extends RecyclerView.Adapter<CartAdapterRec
 
     @NonNull
     @Override
-    public CartAdapterRecyclerView.CartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AdminProductAdapter.CartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_screen_card, parent, false);
-        return new CartViewHolder(itemView);
+        return new AdminProductAdapter.CartViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CartViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull AdminProductAdapter.CartViewHolder holder, @SuppressLint("RecyclerView") int position) {
         String itemName = cartProductData.get(position).getName();
         String priceString = cartProductData.get(position).getQuantity();
         holder.name.setText(itemName);
 
         if(cartProductData.get(position).getType().equals("person")){
             holder.quantity.setText("");
-            StorageReference storageReference =  FirebaseStorage.getInstance().getReference(cartProductData.get(position).getImageUrl());
+            StorageReference storageReference =  FirebaseStorage.getInstance().getReference("personimages/"+cartProductData.get(position).getImageUrl());
 
             storageReference.getDownloadUrl().addOnSuccessListener(uri ->
                     Glide.with(context)
@@ -89,7 +91,8 @@ public class CartAdapterRecyclerView extends RecyclerView.Adapter<CartAdapterRec
             });
         }else {
             holder.quantity.setText("Quantity : "+priceString);
-            StorageReference storageReference =  FirebaseStorage.getInstance().getReference(cartProductData.get(position).getImageUrl());
+            Log.d("url", cartProductData.get(position).getImageUrl());
+            StorageReference storageReference =  FirebaseStorage.getInstance().getReference("products/"+cartProductData.get(position).getImageUrl());
 
             storageReference.getDownloadUrl().addOnSuccessListener(uri ->
                     Glide.with(context)
@@ -103,24 +106,33 @@ public class CartAdapterRecyclerView extends RecyclerView.Adapter<CartAdapterRec
             });
         }
 
+        holder.remove.setText("Archive");
+
         holder.remove.setOnClickListener(view -> removeItemCart(cartProductData.get(position).getId(), context));
     }
 
     @Override
     public int getItemCount() {
-        Log.d("check count", "checked");
         return cartProductData.size();
     }
 
     public void removeItemCart(String prductId, Context context){
-        firestore.collection("users").document(uId).collection("cart").document(prductId)
-                .delete()
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(context, "Item removed From Favourite successfully!", Toast.LENGTH_SHORT).show();
-                    ((CartActivity) context).ReloadActivity();
-                })
-                .addOnFailureListener(e -> Log.w("error", e.toString()));
+
     }
 
+    public void search(String text, ArrayList<CartModel> itemsCopy) {
+        cartProductData.clear();
+        if(text.isEmpty()){
+            cartProductData.addAll(itemsCopy);
+        } else{
+            text = text.toLowerCase();
+            for(CartModel item: itemsCopy){
+                if(item.getName().toLowerCase().contains(text) || item.getType().toLowerCase().contains(text)){
+                    cartProductData.add(item);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
 
 }

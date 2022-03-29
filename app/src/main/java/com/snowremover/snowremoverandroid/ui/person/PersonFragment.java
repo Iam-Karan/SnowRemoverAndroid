@@ -133,10 +133,10 @@ public class PersonFragment extends Fragment {
                         for (DocumentSnapshot d : list) {
                             String id = d.getId().toString();
                             String name = Objects.requireNonNull(d.getData().get("name")).toString();
-                            String price = "0.0";
+                            String price = Objects.requireNonNull(d.getData().get("Price")).toString();
                             float pricefloat = Float.parseFloat(price);
                             String imageUrl = Objects.requireNonNull(d.getData().get("imageurl")).toString();
-                            int numOfUnit = Integer.parseInt(d.getData().get("numberOfOrder").toString());
+                            int numOfUnit = Integer.parseInt(d.getData().get("personId").toString());
                             String type = "person";
                             ProductData data = new ProductData(id, name, imageUrl, pricefloat, numOfUnit, type);
                             productItemData.add(data);

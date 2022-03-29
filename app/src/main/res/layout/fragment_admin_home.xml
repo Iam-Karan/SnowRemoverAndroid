@@ -1,14 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical"
     tools:context=".admin.ui.AdminHomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:background="@color/blue">
 
-</FrameLayout>
+        <androidx.appcompat.widget.SearchView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/home_screen_searchView"
+            app:defaultQueryHint="search"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/rouned_bg"
+            app:searchIcon="@drawable/ic_round_search_24"/>
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_margin="10dp"
+        android:id="@+id/product_add_to_cart"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:drawableLeft="@drawable/ic_round_add_24"
+        android:drawableTint="@color/white"
+        android:paddingLeft="80dp"
+        android:drawablePadding="-60dp"
+        android:text="Add products"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:background="@drawable/blue_buttun_bg"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:animateLayoutChanges="true">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginBottom="?actionBarSize"
+            android:id="@+id/home_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+</LinearLayout>
