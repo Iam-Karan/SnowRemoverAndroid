@@ -213,6 +213,5 @@ public class UserProfileActivity extends AppCompatActivity {
                         oldPasword.setError("Wrong Password!");
                     }
                 });
-
     }
 }

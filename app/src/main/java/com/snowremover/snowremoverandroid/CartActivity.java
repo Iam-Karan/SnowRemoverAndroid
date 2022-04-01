@@ -37,6 +37,7 @@ public class CartActivity extends AppCompatActivity {
     private ImageButton backButton;
     private AppCompatButton reserve, order;
     private ArrayList<CartModel> productItemData = new ArrayList<>();
+    private ArrayList<CartModel> copyData = new ArrayList<>();
     private RelativeLayout cartLayout, errorLayout;
     private RecyclerView cartRecyclerView;
     private CartAdapterRecyclerView adapter;
@@ -84,7 +85,7 @@ public class CartActivity extends AppCompatActivity {
     }
 
     private void setAdapter() {
-        adapter = new CartAdapterRecyclerView(productItemData);
+        adapter = new CartAdapterRecyclerView(productItemData, copyData);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getBaseContext());
         cartRecyclerView.setLayoutManager(layoutManager);
         cartRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -107,23 +108,15 @@ public class CartActivity extends AppCompatActivity {
 
                             CartModel data = new CartModel(id, type, quntity, name, image);
                             productItemData.add(data);
-
                         }
+                        copyData.addAll(productItemData);
                     } else {
                         cartLayout.setVisibility(View.GONE);
                         errorLayout.setVisibility(View.VISIBLE);
                         Toast.makeText(getApplicationContext(), "No data found in Database", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Fail to get the data.", Toast.LENGTH_SHORT).show())
-                .addOnCompleteListener(task -> {
-                    setAdapter();
-                });
+                .addOnCompleteListener(task -> setAdapter());
     }
 
-    public void ReloadActivity(){
-        finish();
-        overridePendingTransition(0, 0);
-        startActivity(getIntent());
-        overridePendingTransition(0, 0);
-    }
 }

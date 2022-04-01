@@ -121,7 +121,7 @@ public class PersonDetailActivity extends AppCompatActivity {
                     personDescription.setText(document.getData().get("description").toString());
                     personPrice.setText("$ 0.00");
                     personAge.setText(document.getData().get("age").toString());
-                    personOrders.setText(document.getData().get("numberOfOrder").toString());
+                    personOrders.setText("25");
                 } else {
                     Log.d("document Not Found", "No such document");
                 }

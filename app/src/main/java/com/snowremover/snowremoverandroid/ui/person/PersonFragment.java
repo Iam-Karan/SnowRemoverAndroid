@@ -138,8 +138,11 @@ public class PersonFragment extends Fragment {
                             String imageUrl = Objects.requireNonNull(d.getData().get("imageurl")).toString();
                             int numOfUnit = Integer.parseInt(d.getData().get("personId").toString());
                             String type = "person";
-                            ProductData data = new ProductData(id, name, imageUrl, pricefloat, numOfUnit, type);
-                            productItemData.add(data);
+                            boolean archive = (boolean) d.getData().get("archive");
+                            if(!archive){
+                                ProductData data = new ProductData(id, name, imageUrl, pricefloat, numOfUnit, type);
+                                productItemData.add(data);
+                            }
                         }
                     } else {
                         Toast.makeText(getContext(), "No data found in Database", Toast.LENGTH_SHORT).show();

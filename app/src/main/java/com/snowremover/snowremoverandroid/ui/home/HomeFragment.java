@@ -153,11 +153,15 @@ public class HomeFragment extends Fragment {
                             String name = Objects.requireNonNull(d.getData().get("name")).toString();
                             String price = Objects.requireNonNull(d.getData().get("price_numerical")).toString();
                             float pricefloat = Float.parseFloat(price);
+
                             String imageUrl = Objects.requireNonNull(d.getData().get("main_image")).toString();
                             int numOfUnit = Integer.parseInt(d.getData().get("stock_unit").toString());
                             String type = d.getData().get("type").toString();
-                            ProductData data = new ProductData(id, name, imageUrl, pricefloat, numOfUnit, type);
-                            productItemData.add(data);
+                            boolean archive = (boolean) d.getData().get("archive");
+                            if(!archive){
+                                ProductData data = new ProductData(id, name, imageUrl, pricefloat, numOfUnit, type);
+                                productItemData.add(data);
+                            }
                         }
                     } else {
                         Toast.makeText(getContext(), "No data found in Database", Toast.LENGTH_SHORT).show();

@@ -29,13 +29,15 @@ import java.util.Comparator;
 
 public class CartAdapterRecyclerView extends RecyclerView.Adapter<CartAdapterRecyclerView.CartViewHolder>{
 
-    private final ArrayList<CartModel> cartProductData;
+    private  ArrayList<CartModel> cartProductData;
+    private  ArrayList<CartModel> copyData;
     private Context context;
     FirebaseFirestore firestore;
     String uId;
 
-    public CartAdapterRecyclerView(ArrayList<CartModel> cartProductData) {
+    public CartAdapterRecyclerView(ArrayList<CartModel> cartProductData, ArrayList<CartModel> copyData) {
         this.cartProductData = cartProductData;
+        this.copyData = copyData;
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
@@ -103,7 +105,10 @@ public class CartAdapterRecyclerView extends RecyclerView.Adapter<CartAdapterRec
             });
         }
 
-        holder.remove.setOnClickListener(view -> removeItemCart(cartProductData.get(position).getId(), context));
+        holder.remove.setOnClickListener(view -> {
+            copyData.remove(position);
+            removeItemCart(cartProductData.get(position).getId(), context);
+        });
     }
 
     @Override
@@ -113,11 +118,13 @@ public class CartAdapterRecyclerView extends RecyclerView.Adapter<CartAdapterRec
     }
 
     public void removeItemCart(String prductId, Context context){
+        cartProductData.clear();
+        cartProductData.addAll(copyData);
+        notifyDataSetChanged();
         firestore.collection("users").document(uId).collection("cart").document(prductId)
                 .delete()
                 .addOnSuccessListener(unused -> {
                     Toast.makeText(context, "Item removed From Favourite successfully!", Toast.LENGTH_SHORT).show();
-                    ((CartActivity) context).ReloadActivity();
                 })
                 .addOnFailureListener(e -> Log.w("error", e.toString()));
     }

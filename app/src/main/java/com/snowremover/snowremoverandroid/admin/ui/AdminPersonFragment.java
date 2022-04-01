@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.snowremover.snowremoverandroid.CartModel;
 import com.snowremover.snowremoverandroid.R;
 import com.snowremover.snowremoverandroid.admin.AdminProductAdapter;
+import com.snowremover.snowremoverandroid.admin.AdminProductModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +43,8 @@ public class AdminPersonFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private ArrayList<CartModel> productItemData = new ArrayList<>();
-    private ArrayList<CartModel> copyItemData = new ArrayList<>();
+    private ArrayList<AdminProductModel> productItemData = new ArrayList<>();
+    private ArrayList<AdminProductModel> copyItemData = new ArrayList<>();
     private RecyclerView homeRecyclerView;
     FirebaseFirestore firestore;
     AdminProductAdapter adapter;
@@ -117,7 +118,7 @@ public class AdminPersonFragment extends Fragment {
     }
 
     private void setAdapter() {
-        adapter = new AdminProductAdapter(productItemData);
+        adapter = new AdminProductAdapter(productItemData, copyItemData);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         homeRecyclerView.setLayoutManager(layoutManager);
         homeRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -136,7 +137,8 @@ public class AdminPersonFragment extends Fragment {
                             String imageUrl = Objects.requireNonNull(d.getData().get("imageurl")).toString();
                             String quantity = d.getData().get("personId").toString();
                             String type = "person";
-                            CartModel data = new CartModel(id,type, quantity, name, imageUrl);
+                            boolean archive = (boolean) d.getData().get("archive");
+                            AdminProductModel data = new AdminProductModel(id,type, quantity, name, imageUrl, archive);
                             productItemData.add(data);
                         }
                     } else {
