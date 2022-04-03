@@ -1,7 +1,9 @@
 package com.snowremover.snowremoverandroid.admin.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -26,8 +28,10 @@ import com.snowremover.snowremoverandroid.CartAdapterRecyclerView;
 import com.snowremover.snowremoverandroid.CartModel;
 import com.snowremover.snowremoverandroid.HomePageRecyclerView;
 import com.snowremover.snowremoverandroid.ProductData;
+import com.snowremover.snowremoverandroid.ProductDetailActivity;
 import com.snowremover.snowremoverandroid.R;
 import com.snowremover.snowremoverandroid.admin.AdminProductAdapter;
+import com.snowremover.snowremoverandroid.admin.AdminProductDetailActivity;
 import com.snowremover.snowremoverandroid.admin.AdminProductModel;
 
 import java.util.ArrayList;
@@ -56,6 +60,7 @@ public class AdminHomeFragment extends Fragment {
     FirebaseFirestore firestore;
     AdminProductAdapter adapter;
     private SearchView searchView;
+    private AppCompatButton addtocartBtn;
     private ImageButton filterBtn;
     private Spinner dropdownMenu;
 
@@ -100,7 +105,7 @@ public class AdminHomeFragment extends Fragment {
 
         homeRecyclerView = view.findViewById(R.id.home_recyclerview);
         searchView = view.findViewById(R.id.home_screen_searchView);
-
+        addtocartBtn = view.findViewById(R.id.product_add_to_cart);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -116,6 +121,12 @@ public class AdminHomeFragment extends Fragment {
                 }
                 return true;
             }
+        });
+
+        addtocartBtn.setOnClickListener(view1 -> {
+            Intent intent = new Intent(view1.getContext(), AdminProductDetailActivity.class);
+            intent.putExtra("ProductId", "");
+            view1.getContext().startActivity(intent);
         });
 
 

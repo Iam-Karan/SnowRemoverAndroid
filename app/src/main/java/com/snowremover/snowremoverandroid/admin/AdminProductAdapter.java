@@ -41,6 +41,7 @@ public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapte
     FirebaseFirestore firestore;
     String uId;
 
+
     public AdminProductAdapter(ArrayList<AdminProductModel> cartProductData, ArrayList<AdminProductModel> copyData) {
         this.cartProductData = cartProductData;
         this.copyData = copyData;
@@ -108,7 +109,7 @@ public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapte
                             .into(holder.image));
 
             holder.card.setOnClickListener(view -> {
-                Intent intent = new Intent(view.getContext(), ProductDetailActivity.class);
+                Intent intent = new Intent(view.getContext(), AdminProductDetailActivity.class);
                 intent.putExtra("ProductId", cartProductData.get(position).getId());
                 view.getContext().startActivity(intent);
             });
