@@ -1,8 +1,10 @@
 
 package com.snowremover.snowremoverandroid.admin.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -20,6 +22,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.snowremover.snowremoverandroid.CartModel;
 import com.snowremover.snowremoverandroid.R;
+import com.snowremover.snowremoverandroid.admin.AdminPersonDetailActivity;
 import com.snowremover.snowremoverandroid.admin.AdminProductAdapter;
 import com.snowremover.snowremoverandroid.admin.AdminProductModel;
 
@@ -45,6 +48,7 @@ public class AdminPersonFragment extends Fragment {
 
     private ArrayList<AdminProductModel> productItemData = new ArrayList<>();
     private ArrayList<AdminProductModel> copyItemData = new ArrayList<>();
+    private AppCompatButton addPerson;
     private RecyclerView homeRecyclerView;
     FirebaseFirestore firestore;
     AdminProductAdapter adapter;
@@ -93,7 +97,7 @@ public class AdminPersonFragment extends Fragment {
 
         homeRecyclerView = view.findViewById(R.id.home_recyclerview);
         searchView = view.findViewById(R.id.home_screen_searchView);
-
+        addPerson = view.findViewById(R.id.add_person);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -109,6 +113,12 @@ public class AdminPersonFragment extends Fragment {
                 }
                 return true;
             }
+        });
+
+        addPerson.setOnClickListener(view1 -> {
+            Intent intent = new Intent(view1.getContext(), AdminPersonDetailActivity.class);
+            intent.putExtra("PersonID", "");
+            view1.getContext().startActivity(intent);
         });
 
         productItemData = new ArrayList<>();

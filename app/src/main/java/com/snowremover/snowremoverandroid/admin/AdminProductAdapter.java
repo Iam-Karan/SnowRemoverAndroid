@@ -94,13 +94,13 @@ public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapte
                             .into(holder.image));
 
             holder.card.setOnClickListener(view -> {
-                Intent intent = new Intent(view.getContext(), PersonDetailActivity.class);
-                intent.putExtra("PersonId", cartProductData.get(position).getId());
+                Intent intent = new Intent(view.getContext(), AdminPersonDetailActivity.class);
+                intent.putExtra("PersonID", cartProductData.get(position).getId());
                 view.getContext().startActivity(intent);
             });
+
         }else {
             holder.quantity.setText("Quantity : "+priceString);
-            Log.d("url", cartProductData.get(position).getImageUrl());
             StorageReference storageReference =  FirebaseStorage.getInstance().getReference("products/"+cartProductData.get(position).getImageUrl());
 
             storageReference.getDownloadUrl().addOnSuccessListener(uri ->
@@ -114,20 +114,21 @@ public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapte
                 view.getContext().startActivity(intent);
             });
 
-            if(cartProductData.get(position).isArchive()){
-                holder.remove.setText("Unarchive");
-                holder.remove.setBackground(ContextCompat.getDrawable(context, R.drawable.green_round_btn));
-            }else {
-                holder.remove.setText("Archive");
-                holder.remove.setBackground(ContextCompat.getDrawable(context, R.drawable.pink_round_btn));
-            }
-            holder.remove.setOnClickListener(view -> {
-                boolean archive = cartProductData.get(position).isArchive();
-                cartProductData.get(position).archive = !archive;
-                copyData.get(position).archive = !archive;
-                removeItemCart(cartProductData.get(position).getId(), cartProductData.get(position).getType(), archive);
-            });
         }
+
+        if(cartProductData.get(position).isArchive()){
+            holder.remove.setText("Unarchive");
+            holder.remove.setBackground(ContextCompat.getDrawable(context, R.drawable.green_round_btn));
+        }else {
+            holder.remove.setText("Archive");
+            holder.remove.setBackground(ContextCompat.getDrawable(context, R.drawable.pink_round_btn));
+        }
+        holder.remove.setOnClickListener(view -> {
+            boolean archive = cartProductData.get(position).isArchive();
+            cartProductData.get(position).archive = !archive;
+            copyData.get(position).archive = !archive;
+            removeItemCart(cartProductData.get(position).getId(), cartProductData.get(position).getType(), archive);
+        });
 
     }
 

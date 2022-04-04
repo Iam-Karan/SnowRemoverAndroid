@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -33,31 +34,29 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AdminProductDetailActivity extends AppCompatActivity {
-
-    private TextInputEditText name, description, brand, price, selfId, stockUnit, type, videoURL;
+public class AdminPersonDetailActivity extends AppCompatActivity {
+    private TextInputEditText name, description, price, age;
     private ImageView image;
     private ImageButton backButton, editBtn;
-    private String nameValue, descriptionValue, brandValue, priceValue, selfIdValue, stockUnitValue, typeValue, videoURLValue;
+    private String nameValue, descriptionValue, ageValue, priceValue;
     private AppCompatButton addProduct, archive;
     private boolean archiveVlaue = false;
-    String prductId;
+    String prductId = "";
     FirebaseFirestore firestore;
     int RESULT_LOAD_IMG = 120;
     Uri imageUri;
     File file;
     String imageName = "";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_product_detail);
-        AdminProductDetailActivity.this.setTitle("");
+        setContentView(R.layout.activity_admin_person_detail);
+        AdminPersonDetailActivity.this.setTitle("");
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        prductId = intent.getExtras().getString("ProductId");
+        prductId = intent.getExtras().getString("PersonID");
         firestore = FirebaseFirestore.getInstance();
         findUI();
 
@@ -68,7 +67,7 @@ public class AdminProductDetailActivity extends AppCompatActivity {
             setData();
 
             archive.setOnClickListener(view -> {
-                firestore.collection("products").document(prductId).update("archive", !archiveVlaue);
+                firestore.collection("person").document(prductId).update("archive", !archiveVlaue);
                 Toast.makeText(getApplicationContext(), "Product is archived!", Toast.LENGTH_SHORT).show();
                 archiveVlaue = !archiveVlaue;
                 setArchive();
@@ -84,60 +83,47 @@ public class AdminProductDetailActivity extends AppCompatActivity {
 
         editBtn.setOnClickListener(view -> getImgage());
 
-        addProduct.setOnClickListener(view -> {
-            getData();
-        });
+        addProduct.setOnClickListener(view -> getData());
+
     }
 
     private void findUI(){
         backButton = findViewById(R.id.back_button);
-        addProduct = findViewById(R.id.product_add);
+        addProduct = findViewById(R.id.person_add);
         editBtn = findViewById(R.id.edit_btn);
-        archive = findViewById(R.id.product_archive);
-        name = findViewById(R.id.product_name);
-        description = findViewById(R.id.product_description);
-        brand = findViewById(R.id.product_brand);
-        price = findViewById(R.id.product_price);
-        selfId = findViewById(R.id.product_self_id);
-        stockUnit = findViewById(R.id.product_stock_unit);
-        type = findViewById(R.id.product_type);
-        videoURL = findViewById(R.id.product_video_url);
-        image = findViewById(R.id.product_image);
+        archive = findViewById(R.id.person_archive);
+        name = findViewById(R.id.person_name);
+        description = findViewById(R.id.person_description);
+        age = findViewById(R.id.person_age);
+        price = findViewById(R.id.person_price);
+        image = findViewById(R.id.person_image);
     }
 
     private void setData(){
-        DocumentReference docRef = firestore.collection("products").document(prductId);
+        DocumentReference docRef = firestore.collection("person").document(prductId);
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 assert document != null;
                 if (document.exists()) {
 
-                    StorageReference storageReference =  FirebaseStorage.getInstance().getReference("products/"+document.getData().get("main_image").toString());
+                    StorageReference storageReference =  FirebaseStorage.getInstance().getReference("personimages/"+document.getData().get("imageurl").toString());
 
                     storageReference.getDownloadUrl().addOnSuccessListener(uri ->
                             Glide.with(this)
                                     .load(uri)
                                     .into(image));
-                    imageName = document.getData().get("main_image").toString();
+                    imageName = document.getData().get("imageurl").toString();
                     nameValue = document.getData().get("name").toString();
                     descriptionValue = document.getData().get("description").toString();
-                    brandValue = document.getData().get("brand").toString();
-                    priceValue = document.getData().get("price_numerical").toString();
-                    selfIdValue = document.getData().get("self_id").toString();
-                    stockUnitValue = document.getData().get("stock_unit").toString();
-                    typeValue = document.getData().get("type").toString();
-                    videoURLValue = document.getData().get("video_url").toString();
+                    ageValue = document.getData().get("age").toString();
+                    priceValue = document.getData().get("Price").toString();
                     archiveVlaue = (boolean) document.getData().get("archive");
 
                     name.setText(nameValue);
                     description.setText(descriptionValue);
-                    brand.setText(brandValue);
+                    age.setText(ageValue);
                     price.setText(priceValue);
-                    selfId.setText(selfIdValue);
-                    stockUnit.setText(stockUnitValue);
-                    type.setText(typeValue);
-                    videoURL.setText(videoURLValue);
                     setArchive();
                 } else {
                     Log.d("document Not Found", "No such document");
@@ -189,86 +175,73 @@ public class AdminProductDetailActivity extends AppCompatActivity {
                 image.setImageBitmap(selectedImage);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                Toast.makeText(AdminProductDetailActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                Toast.makeText(AdminPersonDetailActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
             }
 
         }else {
-            Toast.makeText(AdminProductDetailActivity.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
+            Toast.makeText(AdminPersonDetailActivity.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
         }
     }
 
     private void getData(){
-        if(!checkValueFuntion(name) && !checkValueFuntion(description) && !checkValueFuntion(brand) && !checkValueFuntion(price) && !checkValueFuntion(selfId) && !checkValueFuntion(stockUnit) && !checkValueFuntion(type) && !checkValueFuntion(videoURL) && !imageName.isEmpty()){
+        if(!checkValueFuntion(name) && !checkValueFuntion(description) && !checkValueFuntion(age) && !checkValueFuntion(price) && !imageName.isEmpty()){
             nameValue = name.getText().toString();
             descriptionValue = description.getText().toString();
-            brandValue = brand.getText().toString();
+            ageValue = age.getText().toString();
             priceValue = price.getText().toString();
-            selfIdValue = selfId.getText().toString();
-            stockUnitValue = stockUnit.getText().toString();
-            typeValue = type.getText().toString();
-            videoURLValue = videoURL.getText().toString();
             if(prductId.isEmpty()){
-                addProduct();
+                addPerson();
             }else {
-                uploadData();
+                updateData();
             }
         }
     }
 
-    private void addProduct(){
+    private void addPerson(){
         Map<String, Object> productData = new HashMap<>();
         productData.put("name", nameValue);
         productData.put("description", descriptionValue);
         productData.put("archive", archiveVlaue);
-        productData.put("main_image", imageName);
-        productData.put("brand", brandValue);
-        productData.put("price_numerical", priceValue);
-        productData.put("self_id", Integer.parseInt(selfIdValue));
-        productData.put("stock_unit", Integer.parseInt(stockUnitValue));
-        productData.put("type", typeValue);
-        productData.put("video_url", videoURLValue);
+        productData.put("imageurl", imageName);
+        productData.put("age", Integer.parseInt(ageValue));
+        productData.put("Price", priceValue);
+        productData.put("personId", 1);
+        productData.put("id", 1);
+        productData.put("completed_order", 0);
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference().child("products");
+        StorageReference storageRef = storage.getReference().child("personimages");
 
         storageRef.child(imageName).putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> {
-                    firestore.collection("products").document().set(productData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            Toast.makeText(AdminProductDetailActivity.this, "Product Added Successfully!", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnFailureListener(e -> Toast.makeText(AdminProductDetailActivity.this, e.toString(), Toast.LENGTH_SHORT).show());
+                    firestore.collection("person").document().set(productData).addOnSuccessListener(unused -> Toast.makeText(AdminPersonDetailActivity.this, "Product Added Successfully!", Toast.LENGTH_SHORT).show()).addOnFailureListener(e -> Toast.makeText(AdminPersonDetailActivity.this, e.toString(), Toast.LENGTH_SHORT).show());
                 })
-                .addOnFailureListener(e -> Toast.makeText(AdminProductDetailActivity.this, e.toString(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(AdminPersonDetailActivity.this, e.toString(), Toast.LENGTH_SHORT).show());
     }
 
-    private void uploadData(){
+    private void updateData(){
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference().child("products");
+        StorageReference storageRef = storage.getReference().child("personimages");
 
 
         firestore.collection("products").document(prductId).update(
-                "main_image" , imageName,
+                "imageurl" , imageName,
                 "name" , nameValue,
                 "archive", archiveVlaue,
-                "brand", brandValue,
+                "age", Integer.parseInt(ageValue),
                 "description", descriptionValue,
-                "price_numerical" , priceValue,
-                "self_id", Integer.parseInt(selfIdValue),
-                "stock_unit", Integer.parseInt(stockUnitValue),
-                "type", typeValue,
-                "video_url", videoURLValue).addOnSuccessListener(unused -> {
+                "Price" , priceValue
+                ).addOnSuccessListener(unused -> {
 
-                    if(imageUri != null){
-                        storageRef.child(imageName).putFile(imageUri)
-                                .addOnSuccessListener(taskSnapshot -> {
+            if(imageUri != null){
+                storageRef.child(imageName).putFile(imageUri)
+                        .addOnSuccessListener(taskSnapshot -> {
 
-                                })
-                                .addOnFailureListener(e -> Toast.makeText(AdminProductDetailActivity.this, e.toString(), Toast.LENGTH_SHORT).show());
-                    }
-                Toast.makeText(AdminProductDetailActivity.this, "Product updated successfully!", Toast.LENGTH_SHORT).show();
-                }).addOnFailureListener(e -> Toast.makeText(AdminProductDetailActivity.this, e.toString(), Toast.LENGTH_SHORT).show());
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(AdminPersonDetailActivity.this, e.toString(), Toast.LENGTH_SHORT).show());
+            }
+            Toast.makeText(AdminPersonDetailActivity.this, "Product updated successfully!", Toast.LENGTH_SHORT).show();
+        }).addOnFailureListener(e -> Toast.makeText(AdminPersonDetailActivity.this, e.toString(), Toast.LENGTH_SHORT).show());
 
     }
 
