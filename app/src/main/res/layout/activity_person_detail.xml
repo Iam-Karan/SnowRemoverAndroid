@@ -4,43 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/card_background"
+    android:background="@color/blue"
     tools:context=".PersonDetailActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp"
-        android:elevation="0dp">
-
-        <ImageButton
-            android:id="@+id/back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_round_arrow_back_ios_24"
-            android:background="@android:color/transparent"/>
-
-        <TextView
-            android:layout_gravity="center"
-            android:id="@+id/headerText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="Person details"
-            android:textSize="24dp"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:textColor="@color/white" />
-
-    </androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
-        android:layout_below="@+id/toolbar"
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -48,7 +17,7 @@
             android:layout_weight="2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:padding="20dp">
+            android:padding="10dp">
 
             <ImageView
                 android:id="@+id/person_image"
@@ -67,7 +36,7 @@
             android:background="@drawable/one_side_rounded_bg"
             android:orientation="vertical"
             android:paddingTop="30dp"
-            android:paddingBottom="20dp"
+            android:paddingBottom="10dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp">
 
@@ -219,17 +188,106 @@
                     android:textAlignment="center"/>
             </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatButton
+            <LinearLayout
                 android:layout_weight="1"
-                android:id="@+id/person_add_to_cart"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:text="Add to Cart"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                android:background="@drawable/blue_buttun_bg"/>
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Hour:"
+                    android:textSize="24sp"
+                    android:textColor="@color/darkblue"
+                    android:textStyle="bold"/>
+
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal">
+
+                    <ImageButton
+                        android:id="@+id/product_count_remove"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_round_remove_24"
+                        android:background="@drawable/product_description_buttun_bg"
+                        android:layout_gravity="center_vertical"/>
+
+                    <TextView
+                        android:id="@+id/product_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:text="1"
+                        android:inputType="number"
+                        android:textSize="36dp" />
+
+                    <ImageButton
+                        android:id="@+id/product_count_add"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_round_add_24"
+                        android:background="@drawable/product_description_buttun_bg"
+                        android:layout_gravity="center_vertical"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="horizontal">
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Reserve"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:background="@drawable/pink_round_btn"/>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Book Now"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:background="@drawable/blue_buttun_bg"/>
+            </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>
 
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:scaleType="fitCenter"
+        android:clickable="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_round_arrow_back_ios_24" />
+
+    <ImageButton
+        android:id="@+id/person_add_to_cart"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:scaleType="fitCenter"
+        android:clickable="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_round_add_shopping_cart_24" />
 </RelativeLayout>

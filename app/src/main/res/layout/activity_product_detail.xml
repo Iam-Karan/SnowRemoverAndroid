@@ -4,43 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/card_background"
+    android:background="@color/blue"
     tools:context=".ProductDetailActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp"
-        android:elevation="0dp">
-
-        <ImageButton
-            android:id="@+id/back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_round_arrow_back_ios_24"
-            android:background="@android:color/transparent"/>
-
-        <TextView
-            android:layout_gravity="center"
-            android:id="@+id/headerText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="Product details"
-            android:textSize="24dp"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:textColor="@color/white" />
-
-    </androidx.appcompat.widget.Toolbar>
-
-    <LinearLayout
-        android:layout_below="@+id/toolbar"
+       <LinearLayout
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -215,17 +183,54 @@
                 </LinearLayout>
 
             </LinearLayout>
-            <androidx.appcompat.widget.AppCompatButton
+            <LinearLayout
                 android:layout_weight="1"
-                android:id="@+id/product_add_to_cart"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:text="Add to Cart"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                android:background="@drawable/blue_buttun_bg"/>
+                android:orientation="horizontal">
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Reserve"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:background="@drawable/pink_round_btn"/>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Book Now"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:background="@drawable/blue_buttun_bg"/>
+            </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>
 
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:scaleType="fitCenter"
+        android:clickable="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_round_arrow_back_ios_24" />
+
+    <ImageButton
+        android:id="@+id/product_add_to_cart"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:scaleType="fitCenter"
+        android:clickable="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_round_add_shopping_cart_24" />
 </RelativeLayout>

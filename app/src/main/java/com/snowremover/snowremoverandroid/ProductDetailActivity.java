@@ -15,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -33,8 +35,7 @@ import java.util.Objects;
 public class ProductDetailActivity extends AppCompatActivity {
 
     private TextView productName, productPrice, productDescription, productQuantity, videoBtn;
-    private ImageButton addFavourite, removeFavourite, addProduct, removeProduct, backButton;
-    private AppCompatButton addtoCart;
+    private ImageButton addFavourite, removeFavourite, addProduct, removeProduct, backButton, addtoCart;
     private ImageView productImage;
     private YouTubePlayerView youTubePlayerView;
     String youtubeUrl = "https://www.youtube.com/watch?v=";
@@ -54,9 +55,6 @@ public class ProductDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
-        ProductDetailActivity.this.setTitle("");
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
         prductId = intent.getExtras().getString("ProductId");
@@ -189,7 +187,21 @@ public class ProductDetailActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Task Fails to get Favourite products", Toast.LENGTH_SHORT).show();
                         }
                     });
+
+            firestore.collection("users").document(uId).collection("cart").document(prductId).get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            if(documentSnapshot.exists()){
+                                count = Integer.parseInt(documentSnapshot.getData().get("quantity").toString());
+                                productQuantity.setText(""+count);
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Task Fails to get Favourite products", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -214,7 +226,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                                 }
                             }
                             if(productIds.contains(prductId)){
-                                updateCart(prductId, ""+cartCount);
+                                updateCart();
                             }
                             else {
                                 addProductToCart();
@@ -239,29 +251,24 @@ public class ProductDetailActivity extends AppCompatActivity {
         product.put("type", "products");
         product.put("name", name);
         product.put("image", imageurl);
+        product.put("hours", "1");
         documentReference.set(product).addOnSuccessListener(unused -> {
-            count = 1;
-            productQuantity.setText(""+count);
             Toast.makeText(getApplicationContext(), "Item Added successfully!", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show());
     }
 
-    public void updateCart(String prductId, String quntity){
-        int itemCountInt = Integer.parseInt(quntity);
-        int updatedItemCount = itemCountInt + count;
-
+    public void updateCart(){
         Map<String, Object> product = new HashMap<>();
         product.put("id", prductId);
-        product.put("quantity", ""+updatedItemCount);
+        product.put("quantity", ""+count);
         product.put("type", "products");
         product.put("name", name);
         product.put("image", imageurl);
+        product.put("hours", "1");
         firestore.collection("users").document(uId).collection("cart").document(prductId)
                 .update(product)
                 .addOnSuccessListener(unused -> {
-                    count = 1;
-                    productQuantity.setText(""+count);
-                    Toast.makeText(getApplicationContext(), "Item Added successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Cart Updated successfully!", Toast.LENGTH_SHORT).show();
                 }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show());
     }
 

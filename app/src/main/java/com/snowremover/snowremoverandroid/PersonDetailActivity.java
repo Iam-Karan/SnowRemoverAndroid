@@ -1,9 +1,6 @@
 package com.snowremover.snowremoverandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.Toolbar;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,25 +26,21 @@ import java.util.Objects;
 
 public class PersonDetailActivity extends AppCompatActivity {
 
-    private TextView personName, personPrice, personDescription, personOrders, personAge;
-    private ImageButton addFavourite, removeFavourite, backButton;
-    private AppCompatButton addtoCart;
+    private TextView personName, personPrice, personDescription, personOrders, personAge, productQuantity;
+    private ImageButton addFavourite, removeFavourite, backButton, addtoCart,addProduct, removeProduct;
     private ImageView personImage;
     FirebaseUser mFirebaseUser;
     String personId;
     String uId;
     String name;
     String imageurl;
+    int count = 1;
     ArrayList<String> personIds = new ArrayList<>();
     FirebaseFirestore firestore;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_detail);
-
-        PersonDetailActivity.this.setTitle("");
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
         personId = intent.getExtras().getString("PersonId");
@@ -82,6 +75,18 @@ public class PersonDetailActivity extends AppCompatActivity {
             addtoCart.setOnClickListener(view -> toastLogin());
         }
 
+        addProduct.setOnClickListener(view -> {
+            count = count + 1;
+            productQuantity.setText(""+count);
+        });
+
+        removeProduct.setOnClickListener(view -> {
+            if(count > 1){
+                count = count - 1;
+                productQuantity.setText(""+count);
+            }
+        });
+
         backButton.setOnClickListener(view -> {
             onBackPressed();
         });
@@ -97,10 +102,12 @@ public class PersonDetailActivity extends AppCompatActivity {
         personAge = findViewById(R.id.person_age);
         personOrders = findViewById(R.id.person_order);
         addtoCart = findViewById(R.id.person_add_to_cart);
+        addProduct = findViewById(R.id.product_count_add);
+        removeProduct = findViewById(R.id.product_count_remove);
+        productQuantity = findViewById(R.id.product_count);
     }
 
     public void setData(){
-
 
         DocumentReference docRef = firestore.collection("person").document(personId);
         docRef.get().addOnCompleteListener(task -> {
@@ -119,9 +126,9 @@ public class PersonDetailActivity extends AppCompatActivity {
                     imageurl = "personimages/"+document.getData().get("imageurl");
                     personName.setText(document.getData().get("name").toString());
                     personDescription.setText(document.getData().get("description").toString());
-                    personPrice.setText("$ 0.00");
+                    personPrice.setText(document.getData().get("Price").toString());
                     personAge.setText(document.getData().get("age").toString());
-                    personOrders.setText("25");
+                    personOrders.setText(document.getData().get("completed_order").toString());
                 } else {
                     Log.d("document Not Found", "No such document");
                 }
@@ -143,11 +150,23 @@ public class PersonDetailActivity extends AppCompatActivity {
                                             addFavourite.setVisibility(View.GONE);
                                         }
                                     }
-
                                 }
                             } else {
                                 removeFavourite.setVisibility(View.GONE);
                                 addFavourite.setVisibility(View.VISIBLE);
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Task Fails to get Favourite products", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+            firestore.collection("users").document(uId).collection("cart").document(personId).get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            if(documentSnapshot.exists()){
+                                count = Integer.parseInt(documentSnapshot.getData().get("hours").toString());
+                                productQuantity.setText(""+count);
                             }
                         } else {
                             Toast.makeText(getApplicationContext(), "Task Fails to get Favourite products", Toast.LENGTH_SHORT).show();
@@ -176,7 +195,7 @@ public class PersonDetailActivity extends AppCompatActivity {
                                 }
                             }
                             if(personIds.contains(personId)){
-                                Toast.makeText(getApplicationContext(), "Already added in the cart!", Toast.LENGTH_SHORT).show();
+                                updateCart();
                             }
                             else {
                                 addProductToCart();
@@ -201,9 +220,25 @@ public class PersonDetailActivity extends AppCompatActivity {
         product.put("type", "person");
         product.put("name", name);
         product.put("image", imageurl);
+        product.put("hours", ""+count);
         documentReference.set(product).addOnSuccessListener(unused -> {
             Toast.makeText(getApplicationContext(), "Person Added successfully!", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show());
+    }
+
+    public void updateCart(){
+        Map<String, Object> product = new HashMap<>();
+        product.put("id", personId);
+        product.put("quantity", "1");
+        product.put("type", "products");
+        product.put("name", name);
+        product.put("image", imageurl);
+        product.put("hours", ""+count);
+        firestore.collection("users").document(uId).collection("cart").document(personId)
+                .update(product)
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(getApplicationContext(), "Item Added successfully!", Toast.LENGTH_SHORT).show();
+                }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show());
     }
 
      public void setAddToFavourite(){
