@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -27,7 +28,11 @@ import com.google.firebase.storage.StorageReference;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
+
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -37,7 +42,10 @@ public class ProductDetailActivity extends AppCompatActivity {
     private TextView productName, productPrice, productDescription, productQuantity, videoBtn;
     private ImageButton addFavourite, removeFavourite, addProduct, removeProduct, backButton, addtoCart;
     private ImageView productImage;
+    private AppCompatButton orderProduct, reserveProduct;
     private YouTubePlayerView youTubePlayerView;
+    private ArrayList<OrderModel> orderData;
+    private ArrayList<CartModel> cartdata;
     String youtubeUrl = "https://www.youtube.com/watch?v=";
     String url;
     String finalUrl;
@@ -47,6 +55,8 @@ public class ProductDetailActivity extends AppCompatActivity {
     int cartCount = 0;
     int count = 1;
     String name;
+    double price;
+    double totalPrice = 0;
     String imageurl;
     ArrayList<String> productIds = new ArrayList<>();
     FirebaseFirestore firestore;
@@ -63,6 +73,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         mFirebaseUser = mAuth.getCurrentUser();
 
+        orderData = new ArrayList<>();
+        cartdata = new ArrayList<>();
         findID();
         setData();
 
@@ -81,6 +93,9 @@ public class ProductDetailActivity extends AppCompatActivity {
             });
 
             addtoCart.setOnClickListener(view -> addToCart());
+
+           // orderProduct.setOnClickListener(view -> orderProduct());
+
         }else {
             addFavourite.setOnClickListener(view -> toastLogin());
 
@@ -123,6 +138,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         videoBtn = findViewById(R.id.watch_video);
         youTubePlayerView = findViewById(R.id.product_video);
         addtoCart = findViewById(R.id.product_add_to_cart);
+        orderProduct = findViewById(R.id.product_order);
+        reserveProduct = findViewById(R.id.product_reserve);
         getLifecycle().addObserver(youTubePlayerView);
     }
 
@@ -155,6 +172,7 @@ public class ProductDetailActivity extends AppCompatActivity {
                     imageurl = "products/"+document.getData().get("main_image");
                     productName.setText(document.getData().get("name").toString());
                     productDescription.setText(document.getData().get("description").toString());
+                    price = Double.parseDouble(document.getData().get("price_numerical").toString());
                     productPrice.setText("$"+document.getData().get("price_numerical").toString());
                 } else {
                     Log.d("document Not Found", "No such document");
@@ -204,6 +222,49 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     }
 
+    public void orderProduct(){
+        firestore.collection("users").document(uId).collection("cart").get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if(Objects.requireNonNull(task.getResult()).size() > 0) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                if (document.exists()) {
+                                    String id = document.getData().get("id").toString();
+                                    String type = document.getData().get("type").toString();
+                                    String quantity = document.getData().get("quantity").toString();
+                                    String name = document.getData().get("name").toString();
+                                    String image = document.getData().get("image").toString();
+                                    String hour = document.getData().get("hours").toString();
+                                    double personPrice = Double.parseDouble(document.getData().get("price").toString());
+                                    totalPrice = totalPrice + personPrice;
+                                    CartModel data = new CartModel(id, type, quantity, name, image, hour, personPrice);
+                                    cartdata.add(data);
+                                }else {
+                                    totalPrice = totalPrice + price;
+                                    CartModel data = new CartModel(prductId, "products",String.valueOf(count), name, imageurl, "1", price );
+                                    cartdata.add(data);
+                                }
+                            }
+                        }
+                    }else {
+                        Toast.makeText(getApplicationContext(), "Task Fails to get cart products", Toast.LENGTH_SHORT).show();
+                    }
+                });
+        Date currentTime = Calendar.getInstance().getTime();
+        String date = String.valueOf(currentTime.getDate());
+        String month = String.valueOf(currentTime.getMonth());
+        String year = String.valueOf(currentTime.getYear());
+        String hour = String.valueOf(currentTime.getHours());
+        String minute = String.valueOf(currentTime.getMinutes());
+        OrderModel orderModel = new OrderModel(cartdata, date, month, hour, minute, year, totalPrice, true);
+        orderData.add(orderModel);
+        Intent intent = new Intent(getApplicationContext(), ConfrimOrderActivity.class);
+        Bundle args = new Bundle();
+        args.putSerializable("ARRAYLIST",(Serializable)orderData);
+        intent.putExtra("BUNDLE",args);
+        startActivity(intent);
+    }
+
     @SuppressLint("SetTextI18n")
     public void addToCart(){
 
@@ -218,7 +279,10 @@ public class ProductDetailActivity extends AppCompatActivity {
                                     String quantity = document.getData().get("quantity").toString();
                                     String name = document.getData().get("name").toString();
                                     String image = document.getData().get("image").toString();
-                                    CartModel data = new CartModel(id, type, quantity, name, image);
+                                    String hour = document.getData().get("hours").toString();
+                                    double personPrice = Double.parseDouble(document.getData().get("price").toString());
+                                    CartModel data = new CartModel(id, type, quantity, name, image, hour, price);
+                                    cartdata.add(data);
                                     if(id.equals(prductId)){
                                         cartCount = Integer.parseInt(quantity);
                                     }
@@ -238,7 +302,6 @@ public class ProductDetailActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Task Fails to get cart products", Toast.LENGTH_SHORT).show();
                     }
                 });
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -252,6 +315,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         product.put("name", name);
         product.put("image", imageurl);
         product.put("hours", "1");
+        product.put("price", ""+price);
         documentReference.set(product).addOnSuccessListener(unused -> {
             Toast.makeText(getApplicationContext(), "Item Added successfully!", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show());
@@ -265,6 +329,7 @@ public class ProductDetailActivity extends AppCompatActivity {
         product.put("name", name);
         product.put("image", imageurl);
         product.put("hours", "1");
+        product.put("price", ""+price);
         firestore.collection("users").document(uId).collection("cart").document(prductId)
                 .update(product)
                 .addOnSuccessListener(unused -> {

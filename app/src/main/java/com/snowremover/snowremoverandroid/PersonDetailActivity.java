@@ -1,9 +1,12 @@
 package com.snowremover.snowremoverandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -19,7 +22,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -29,12 +36,17 @@ public class PersonDetailActivity extends AppCompatActivity {
     private TextView personName, personPrice, personDescription, personOrders, personAge, productQuantity;
     private ImageButton addFavourite, removeFavourite, backButton, addtoCart,addProduct, removeProduct;
     private ImageView personImage;
+    private AppCompatButton orderProduct, reserveProduct;
     FirebaseUser mFirebaseUser;
     String personId;
     String uId;
     String name;
+    double price;
     String imageurl;
     int count = 1;
+    private ArrayList<OrderModel> orderData;
+    private ArrayList<CartModel> cartdata;
+    double totalPrice = 0;
     ArrayList<String> personIds = new ArrayList<>();
     FirebaseFirestore firestore;
     @Override
@@ -49,6 +61,8 @@ public class PersonDetailActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         mFirebaseUser = mAuth.getCurrentUser();
 
+        orderData = new ArrayList<>();
+        cartdata = new ArrayList<>();
         findID();
         setData();
 
@@ -67,6 +81,7 @@ public class PersonDetailActivity extends AppCompatActivity {
             });
 
             addtoCart.setOnClickListener(view -> addToCart());
+           // orderProduct.setOnClickListener(view -> orderProduct());
         }else {
             addFavourite.setOnClickListener(view -> toastLogin());
 
@@ -105,6 +120,8 @@ public class PersonDetailActivity extends AppCompatActivity {
         addProduct = findViewById(R.id.product_count_add);
         removeProduct = findViewById(R.id.product_count_remove);
         productQuantity = findViewById(R.id.product_count);
+        orderProduct = findViewById(R.id.person_book_order);
+        reserveProduct = findViewById(R.id.person_reserve);
     }
 
     public void setData(){
@@ -126,6 +143,7 @@ public class PersonDetailActivity extends AppCompatActivity {
                     imageurl = "personimages/"+document.getData().get("imageurl");
                     personName.setText(document.getData().get("name").toString());
                     personDescription.setText(document.getData().get("description").toString());
+                    price = Double.parseDouble(document.getData().get("Price").toString());
                     personPrice.setText(document.getData().get("Price").toString());
                     personAge.setText(document.getData().get("age").toString());
                     personOrders.setText(document.getData().get("completed_order").toString());
@@ -176,6 +194,49 @@ public class PersonDetailActivity extends AppCompatActivity {
     }
 
 
+    public void orderProduct(){
+        firestore.collection("users").document(uId).collection("cart").get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if(Objects.requireNonNull(task.getResult()).size() > 0) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                if (document.exists()) {
+                                    String id = document.getData().get("id").toString();
+                                    String type = document.getData().get("type").toString();
+                                    String quantity = document.getData().get("quantity").toString();
+                                    String name = document.getData().get("name").toString();
+                                    String image = document.getData().get("image").toString();
+                                    String hour = document.getData().get("hours").toString();
+                                    double personPrice = Double.parseDouble(document.getData().get("price").toString());
+                                    totalPrice = totalPrice + personPrice;
+                                    CartModel data = new CartModel(id, type, quantity, name, image, hour, personPrice);
+                                    cartdata.add(data);
+                                }else {
+                                    totalPrice = totalPrice + price;
+                                    CartModel data = new CartModel(personId, "products",String.valueOf(count), name, imageurl, "1", price );
+                                    cartdata.add(data);
+                                }
+                            }
+                        }
+                    }else {
+                        Toast.makeText(getApplicationContext(), "Task Fails to get cart products", Toast.LENGTH_SHORT).show();
+                    }
+                });
+        Date currentTime = Calendar.getInstance().getTime();
+        String date = String.valueOf(currentTime.getDate());
+        String month = String.valueOf(currentTime.getMonth());
+        String year = String.valueOf(currentTime.getYear());
+        String hour = String.valueOf(currentTime.getHours());
+        String minute = String.valueOf(currentTime.getMinutes());
+        OrderModel orderModel = new OrderModel(cartdata, date, month, hour, minute, year, totalPrice, true);
+        orderData.add(orderModel);
+        Intent intent = new Intent(getApplicationContext(), ConfrimOrderActivity.class);
+        Bundle args = new Bundle();
+        args.putSerializable("ARRAYLIST",(Serializable)orderData);
+        intent.putExtra("BUNDLE",args);
+        startActivity(intent);
+    }
+
     @SuppressLint("SetTextI18n")
     public void addToCart(){
 
@@ -190,7 +251,9 @@ public class PersonDetailActivity extends AppCompatActivity {
                                     String quantity = document.getData().get("quantity").toString();
                                     String cartName = document.getData().get("name").toString();
                                     String cartImageurl = "personimages/"+document.getData().get("imageurl");
-                                    CartModel data = new CartModel(id, type, quantity, cartName, cartImageurl);
+                                    String hour = document.getData().get("hours").toString();
+                                    double personPrice = Double.parseDouble(document.getData().get("price").toString());
+                                    CartModel data = new CartModel(id, type, quantity, cartName, cartImageurl, hour, personPrice);
                                     personIds.add(data.getId());
                                 }
                             }
@@ -221,6 +284,7 @@ public class PersonDetailActivity extends AppCompatActivity {
         product.put("name", name);
         product.put("image", imageurl);
         product.put("hours", ""+count);
+        product.put("price", ""+price);
         documentReference.set(product).addOnSuccessListener(unused -> {
             Toast.makeText(getApplicationContext(), "Person Added successfully!", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show());
@@ -234,6 +298,7 @@ public class PersonDetailActivity extends AppCompatActivity {
         product.put("name", name);
         product.put("image", imageurl);
         product.put("hours", ""+count);
+        product.put("price", ""+price);
         firestore.collection("users").document(uId).collection("cart").document(personId)
                 .update(product)
                 .addOnSuccessListener(unused -> {

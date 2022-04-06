@@ -246,6 +246,7 @@
                 android:layout_height="0dp"
                 android:orientation="horizontal">
                 <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/person_reserve"
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -254,6 +255,7 @@
                     android:textSize="24sp"
                     android:background="@drawable/pink_round_btn"/>
                 <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/person_book_order"
                     android:layout_weight="1"
                     android:layout_marginLeft="10dp"
                     android:layout_width="match_parent"

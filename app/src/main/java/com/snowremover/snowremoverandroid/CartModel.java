@@ -7,13 +7,17 @@ public class CartModel {
     String quantity;
     String name;
     String imageUrl;
+    String hour;
+    double price;
 
-    public CartModel(String id, String type, String quantity, String name, String imageUrl) {
+    public CartModel(String id, String type, String quantity, String name, String imageUrl, String hour, double price) {
         this.id = id;
         this.type = type;
         this.quantity = quantity;
         this.name = name;
         this.imageUrl = imageUrl;
+        this.hour = hour;
+        this.price = price;
     }
 
     public String getId() {
@@ -54,5 +58,21 @@ public class CartModel {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getHour() {
+        return hour;
+    }
+
+    public void setHour(String hour) {
+        this.hour = hour;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 }

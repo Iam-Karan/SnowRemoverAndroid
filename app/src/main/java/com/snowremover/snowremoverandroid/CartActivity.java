@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,7 +28,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,6 +45,8 @@ public class CartActivity extends AppCompatActivity {
     private RelativeLayout cartLayout, errorLayout;
     private RecyclerView cartRecyclerView;
     private CartAdapterRecyclerView adapter;
+    private ArrayList<OrderModel> orderData;
+    double totalPrice = 0;
     FirebaseUser mFirebaseUser;
     String uId = "";
     FirebaseFirestore firestore;
@@ -53,6 +59,7 @@ public class CartActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        orderData = new ArrayList<>();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         mFirebaseUser = mAuth.getCurrentUser();
@@ -63,6 +70,8 @@ public class CartActivity extends AppCompatActivity {
             cartLayout.setVisibility(View.VISIBLE);
             errorLayout.setVisibility(View.GONE);
             setCartInfo();
+
+            order.setOnClickListener(view -> orderProduct());
 
         }else {
             cartLayout.setVisibility(View.GONE);
@@ -105,8 +114,10 @@ public class CartActivity extends AppCompatActivity {
                             String type = d.getData().get("type").toString();
                             String name = d.getData().get("name").toString();
                             String image = d.getData().get("image").toString();
-
-                            CartModel data = new CartModel(id, type, quntity, name, image);
+                            String hour = d.getData().get("hours").toString();
+                            double personPrice = Double.parseDouble(d.getData().get("price").toString());
+                            totalPrice = totalPrice + personPrice;
+                            CartModel data = new CartModel(id, type, quntity, name, image, hour, personPrice);
                             productItemData.add(data);
                         }
                         copyData.addAll(productItemData);
@@ -117,6 +128,20 @@ public class CartActivity extends AppCompatActivity {
                     }
                 }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Fail to get the data.", Toast.LENGTH_SHORT).show())
                 .addOnCompleteListener(task -> setAdapter());
+    }
+
+    public void orderProduct(){
+        Date currentTime = Calendar.getInstance().getTime();
+        String date = String.valueOf(currentTime.getDate());
+        String month = String.valueOf(currentTime.getMonth());
+        String year = String.valueOf(currentTime.getYear());
+        String hour = String.valueOf(currentTime.getHours());
+        String minute = String.valueOf(currentTime.getMinutes());
+        OrderModel orderModel = new OrderModel(productItemData, date, month, hour, minute, year, totalPrice, true);
+        orderData.add(orderModel);
+
+        Intent intent = new Intent(getApplicationContext(), ConfrimOrderActivity.class);
+        startActivity(intent);
     }
 
 }
