@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.L;
 import com.bumptech.glide.Glide;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -50,6 +51,10 @@ public class CartActivity extends AppCompatActivity {
     FirebaseUser mFirebaseUser;
     String uId = "";
     FirebaseFirestore firestore;
+    Date currentTime;
+    Timestamp timestamp;
+    String date;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +77,7 @@ public class CartActivity extends AppCompatActivity {
             setCartInfo();
 
             order.setOnClickListener(view -> orderProduct());
+            reserve.setOnClickListener(view -> reserveProduct());
 
         }else {
             cartLayout.setVisibility(View.GONE);
@@ -80,6 +86,7 @@ public class CartActivity extends AppCompatActivity {
         }
 
         backButton.setOnClickListener(view -> onBackPressed());
+
 
     }
 
@@ -91,6 +98,10 @@ public class CartActivity extends AppCompatActivity {
         errorLayout = findViewById(R.id.cart_error_layout);
         cartLayout = findViewById(R.id.cart_items);
         cartRecyclerView = findViewById(R.id.cart_recyclerview);
+
+        currentTime = Calendar.getInstance().getTime();
+        timestamp = new Timestamp(currentTime);
+        date = timestamp.toDate().toString();
     }
 
     private void setAdapter() {
@@ -130,18 +141,27 @@ public class CartActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> setAdapter());
     }
 
-    public void orderProduct(){
-        Date currentTime = Calendar.getInstance().getTime();
-        String date = String.valueOf(currentTime.getDate());
-        String month = String.valueOf(currentTime.getMonth());
-        String year = String.valueOf(currentTime.getYear());
-        String hour = String.valueOf(currentTime.getHours());
-        String minute = String.valueOf(currentTime.getMinutes());
-        OrderModel orderModel = new OrderModel(productItemData, date, month, hour, minute, year, totalPrice, true);
-        orderData.add(orderModel);
-
-        Intent intent = new Intent(getApplicationContext(), ConfrimOrderActivity.class);
+    public void reserveProduct(){
+        Intent intent = new Intent(getApplicationContext(), ReserveActivity.class);
+        intent.putExtra("type", "cart");
+        intent.putExtra("date", date);
+        intent.putExtra("total", String.valueOf(totalPrice));
+        intent.putExtra("id", "cartid");
+        intent.putExtra("hours", "1");
+        intent.putExtra("quantity", "1");
         startActivity(intent);
+    }
+
+    public void orderProduct(){
+        Intent intent = new Intent(getApplicationContext(), ConfrimOrderActivity.class);
+        intent.putExtra("type", "cart");
+        intent.putExtra("date", date);
+        intent.putExtra("total", String.valueOf(totalPrice));
+        intent.putExtra("id", "cartid");
+        intent.putExtra("hours", "1");
+        intent.putExtra("quantity", "1");
+        startActivity(intent);
+
     }
 
 }
