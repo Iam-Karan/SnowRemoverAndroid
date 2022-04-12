@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -94,7 +95,8 @@ public class ProductDetailActivity extends AppCompatActivity {
 
             addtoCart.setOnClickListener(view -> addToCart());
 
-           // orderProduct.setOnClickListener(view -> orderProduct());
+            orderProduct.setOnClickListener(view -> orderProductFunc("order"));
+            reserveProduct.setOnClickListener(view -> orderProductFunc("reserve"));
 
         }else {
             addFavourite.setOnClickListener(view -> toastLogin());
@@ -184,7 +186,7 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         if(mFirebaseUser !=  null){
             uId = mFirebaseUser.getUid();
-            firestore.collection("users").document(uId).collection("favourite").get()
+            firestore.collection("users").document(uId).collection("favorite").get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             if(Objects.requireNonNull(task.getResult()).size() > 0) {
@@ -222,48 +224,6 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     }
 
-    public void orderProduct(){
-        firestore.collection("users").document(uId).collection("cart").get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        if(Objects.requireNonNull(task.getResult()).size() > 0) {
-                            for (DocumentSnapshot document : task.getResult()) {
-                                if (document.exists()) {
-                                    String id = document.getData().get("id").toString();
-                                    String type = document.getData().get("type").toString();
-                                    String quantity = document.getData().get("quantity").toString();
-                                    String name = document.getData().get("name").toString();
-                                    String image = document.getData().get("image").toString();
-                                    String hour = document.getData().get("hours").toString();
-                                    double personPrice = Double.parseDouble(document.getData().get("price").toString());
-                                    totalPrice = totalPrice + personPrice;
-                                    CartModel data = new CartModel(id, type, quantity, name, image, hour, personPrice);
-                                    cartdata.add(data);
-                                }else {
-                                    totalPrice = totalPrice + price;
-                                    CartModel data = new CartModel(prductId, "products",String.valueOf(count), name, imageurl, "1", price );
-                                    cartdata.add(data);
-                                }
-                            }
-                        }
-                    }else {
-                        Toast.makeText(getApplicationContext(), "Task Fails to get cart products", Toast.LENGTH_SHORT).show();
-                    }
-                });
-        Date currentTime = Calendar.getInstance().getTime();
-        String date = String.valueOf(currentTime.getDate());
-        String month = String.valueOf(currentTime.getMonth());
-        String year = String.valueOf(currentTime.getYear());
-        String hour = String.valueOf(currentTime.getHours());
-        String minute = String.valueOf(currentTime.getMinutes());
-        OrderModel orderModel = new OrderModel(cartdata, date, month, hour, minute, year, totalPrice, true);
-        orderData.add(orderModel);
-        Intent intent = new Intent(getApplicationContext(), ConfrimOrderActivity.class);
-        Bundle args = new Bundle();
-        args.putSerializable("ARRAYLIST",(Serializable)orderData);
-        intent.putExtra("BUNDLE",args);
-        startActivity(intent);
-    }
 
     @SuppressLint("SetTextI18n")
     public void addToCart(){
@@ -308,14 +268,14 @@ public class ProductDetailActivity extends AppCompatActivity {
     public void addProductToCart(){
         DocumentReference documentReference = firestore.collection("users").document(uId).collection("cart").document(prductId);
 
-        Map<String, String> product = new HashMap<>();
+        Map<String, Object> product = new HashMap<>();
         product.put("id", prductId);
-        product.put("quantity", ""+count);
+        product.put("quantity", count);
         product.put("type", "products");
         product.put("name", name);
         product.put("image", imageurl);
-        product.put("hours", "1");
-        product.put("price", ""+price);
+        product.put("hours", 1);
+        product.put("price", price);
         documentReference.set(product).addOnSuccessListener(unused -> {
             Toast.makeText(getApplicationContext(), "Item Added successfully!", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show());
@@ -324,12 +284,12 @@ public class ProductDetailActivity extends AppCompatActivity {
     public void updateCart(){
         Map<String, Object> product = new HashMap<>();
         product.put("id", prductId);
-        product.put("quantity", ""+count);
+        product.put("quantity", count);
         product.put("type", "products");
         product.put("name", name);
         product.put("image", imageurl);
-        product.put("hours", "1");
-        product.put("price", ""+price);
+        product.put("hours", 1);
+        product.put("price", price);
         firestore.collection("users").document(uId).collection("cart").document(prductId)
                 .update(product)
                 .addOnSuccessListener(unused -> {
@@ -338,7 +298,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     public void setAddToFavourite(){
-        DocumentReference documentReference = firestore.collection("users").document(uId).collection("favourite").document(prductId);
+        DocumentReference documentReference = firestore.collection("users").document(uId).collection("favorite").document(prductId);
 
         Map<String, String> product = new HashMap<>();
         product.put("id", prductId);
@@ -347,7 +307,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     public void setRemoveFavourite(){
-        firestore.collection("users").document(uId).collection("favourite").document(prductId)
+        firestore.collection("users").document(uId).collection("favorite").document(prductId)
                 .delete()
                 .addOnSuccessListener(aVoid -> Toast.makeText(getApplicationContext(), "Item removed From Favourite successfully!", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Log.w("error", e.toString()));
@@ -355,5 +315,70 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     public void toastLogin(){
         Toast.makeText(getApplicationContext(), "Login first!", Toast.LENGTH_SHORT).show();
+    }
+
+    public void orderProductFunc(String button){
+        firestore.collection("users").document(uId).collection("cart").get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if(Objects.requireNonNull(task.getResult()).size() > 0) {
+                            for (DocumentSnapshot document : task.getResult()) {
+                                if (document.exists()) {
+                                    String quantity = document.getData().get("quantity").toString();
+                                    double personPrice = Double.parseDouble(document.getData().get("price").toString());
+                                    totalPrice = totalPrice + personPrice * Integer.parseInt(quantity);
+                                    addToCart();
+                                    if(button.equals("order")){
+                                        orderIntent( "cart", "cartid", quantity);
+                                    }else {
+                                        reserveIntent( "cart", "cartid", quantity);
+                                    }
+                                }
+                            }
+                        }
+                        else{
+                            if(button.equals("order")){
+                                Log.d("order product", "button else clicked");
+                                orderIntent( "products", prductId, String.valueOf(count));
+                            }else {
+                                reserveIntent("products", prductId, String.valueOf(count));
+                            }
+                        }
+                    }else {
+                        Toast.makeText(getApplicationContext(), "Task Fails to get cart products", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    public void orderIntent(String type, String id, String quantity){
+        totalPrice = totalPrice + price * count;
+        String totalPriceString = String.valueOf(totalPrice);
+        Log.d("order product", "intent clicked");
+        Date currentTime = Calendar.getInstance().getTime();
+        Timestamp timestamp = new Timestamp(currentTime);
+        String date = timestamp.toDate().toString();
+        Intent intent = new Intent(getApplicationContext(), ConfrimOrderActivity.class);
+        intent.putExtra("type", type);
+        intent.putExtra("date", date);
+        intent.putExtra("total", totalPriceString);
+        intent.putExtra("id", id);
+        intent.putExtra("hours", "1");
+        intent.putExtra("quantity", quantity);
+        startActivity(intent);
+    }
+    public void reserveIntent(String type, String id, String quantity){
+        totalPrice = totalPrice + price * count;
+        String totalPriceString = String.valueOf(totalPrice);
+        Date currentTime = Calendar.getInstance().getTime();
+        Timestamp timestamp = new Timestamp(currentTime);
+        String date = timestamp.toDate().toString();
+        Intent intent = new Intent(getApplicationContext(), ReserveActivity.class);
+        intent.putExtra("type", type);
+        intent.putExtra("date", date);
+        intent.putExtra("total", totalPriceString);
+        intent.putExtra("id", id);
+        intent.putExtra("hours", "1");
+        intent.putExtra("quantity", quantity);
+        startActivity(intent);
     }
 }
