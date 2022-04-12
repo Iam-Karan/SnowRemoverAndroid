@@ -16,10 +16,13 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.snowremover.snowremoverandroid.R;
 import com.snowremover.snowremoverandroid.SignInScreen;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -85,10 +88,12 @@ public class AboutUsFragment extends Fragment {
     }
 
     private void setSendFeedback(View view){
-        Map<String, String> feedbackMap = new HashMap<>();
+
+        Map<String, Object> feedbackMap = new HashMap<>();
         feedbackMap.put("name", nameValue);
         feedbackMap.put("email", emailValue);
         feedbackMap.put("feedback", feedbackValue);
+
 
 
 

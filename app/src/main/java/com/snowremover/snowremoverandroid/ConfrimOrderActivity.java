@@ -1,36 +1,30 @@
 package com.snowremover.snowremoverandroid;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.time.LocalDate;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 
 public class ConfrimOrderActivity extends AppCompatActivity {
@@ -48,6 +42,7 @@ public class ConfrimOrderActivity extends AppCompatActivity {
     FirebaseFirestore firestore;
     String uId;
     AppCompatButton buy;
+    String dateString, typeString, totalString, idString, hoursString, quantityString;;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +51,16 @@ public class ConfrimOrderActivity extends AppCompatActivity {
         ConfrimOrderActivity.this.setTitle("");
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Intent intent = getIntent();
+        typeString = intent.getExtras().getString("type");
+        dateString = intent.getExtras().getString("date");
+        totalString = intent.getExtras().getString("total");
+        idString = intent.getExtras().getString("id");
+        hoursString = intent.getExtras().getString("hours");
+        quantityString = intent.getExtras().getString("quantity");
+
+        Log.d("order Intent", typeString+dateString+totalString+idString);
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -71,8 +76,8 @@ public class ConfrimOrderActivity extends AppCompatActivity {
             }
         });
         backImageButton.setOnClickListener(view -> {
-            Intent intent = new Intent(getApplicationContext(), HomeScreen.class);
-            startActivity(intent);
+            Intent homeIntent = new Intent(getApplicationContext(), HomeScreen.class);
+            startActivity(homeIntent);
         });
     }
 
@@ -91,30 +96,93 @@ public class ConfrimOrderActivity extends AppCompatActivity {
     }
 
     public void getData(){
-        firestore.collection("users").document(uId).collection("cart").get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
+        if(typeString.equals("cart")){
+            firestore.collection("users").document(uId).collection("cart").get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
 
-                        List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                        for (DocumentSnapshot d : list) {
+                            List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                            for (DocumentSnapshot d : list) {
 
-                            String id = d.getId();
-                            String quntity = d.getData().get("quantity").toString();
-                            String type = d.getData().get("type").toString();
-                            String name = d.getData().get("name").toString();
-                            String image = d.getData().get("image").toString();
-                            String hour = d.getData().get("hours").toString();
-                            double personPrice = Double.parseDouble(d.getData().get("price").toString());
-                            subTotalValue = subTotalValue + personPrice;
-                            CartModel data = new CartModel(id, type, quntity, name, image, hour, personPrice);
-                            cartData.add(data);
+                                String id = d.getId();
+                                String quantity = d.getData().get("quantity").toString();
+                                String type = d.getData().get("type").toString();
+                                String name = d.getData().get("name").toString();
+                                String imageUrl = d.getData().get("image").toString();
+                                String hours = d.getData().get("hours").toString();
+                                double price = Double.parseDouble(d.getData().get("price").toString());
+                                if(type.equals("person")){
+                                    subTotalValue = subTotalValue + (price * Integer.parseInt(hours));
+                                }else {
+                                    subTotalValue = subTotalValue + (price * Integer.parseInt(quantity));
+                                }
+
+                                CartModel data = new CartModel(id, type, quantity, name, imageUrl, hours, price);
+                                cartData.add(data);
+                            }
+                        } else {
+
+                            Toast.makeText(getApplicationContext(), "No data found in Database", Toast.LENGTH_SHORT).show();
                         }
-                    } else {
+                    }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Fail to get the data.", Toast.LENGTH_SHORT).show())
+                    .addOnCompleteListener(task -> setData());
+        }
+        if(typeString.equals("person")){
+            firestore.collection("person").document(idString).get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            assert document != null;
+                            if (document.exists()) {
 
-                        Toast.makeText(getApplicationContext(), "No data found in Database", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Fail to get the data.", Toast.LENGTH_SHORT).show())
-                .addOnCompleteListener(task -> setData());
+                                String id = document.getId();
+                                String quantity = quantityString;
+                                String type = "person";
+                                String name = document.getData().get("name").toString();
+                                String imageUrl = "personimages/"+document.getData().get("imageurl").toString();
+                                String hours = hoursString;
+                                double price = Double.parseDouble(document.getData().get("Price").toString());
+                                subTotalValue = subTotalValue + price * Integer.parseInt(hours);
+                                CartModel data = new CartModel(id, type, quantity, name, imageUrl, hours, price);
+                                cartData.add(data);
+                                setData();
+                            } else {
+                                Log.d("document Not Found", "No such document");
+                            }
+                        } else {
+                            Log.d("error", "get failed with ", task.getException());
+                        }
+                    }).addOnFailureListener(e -> Log
+                    .d("error", e.toString()));
+        }
+        if(typeString.equals("products")){
+            firestore.collection("products").document(idString).get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            assert document != null;
+                            if (document.exists()) {
+
+                                String id = document.getId();
+                                String quantity = quantityString;
+                                String type = "products";
+                                String name = document.getData().get("name").toString();
+                                String imageUrl  = "products/"+document.getData().get("main_image").toString();
+                                String hours = hoursString;
+                                double price = Double.parseDouble(document.getData().get("price_numerical").toString());
+                                subTotalValue = subTotalValue + price * Integer.parseInt(quantity);
+                                CartModel data = new CartModel(id, type, quantity, name, imageUrl, hours, price);
+                                cartData.add(data);
+                                setData();
+                            } else {
+                                Log.d("document Not Found", "No such document");
+                            }
+                        } else {
+                            Log.d("error", "get failed with ", task.getException());
+                        }
+                    }).addOnFailureListener(e -> Log.d("error", e.toString()));
+        }
+
     }
 
     public void setData(){
@@ -175,30 +243,42 @@ public class ConfrimOrderActivity extends AppCompatActivity {
     }
 
     public void setOrder(){
-
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+        Date parsedDate = null;
         Date currentTime = Calendar.getInstance().getTime();
-        String date = String.valueOf(currentTime.getDate());
-        String month = String.valueOf(currentTime.getMonth());
-        String year = String.valueOf(currentTime.getYear());
-        String hour = String.valueOf(currentTime.getHours());
-        String minute = String.valueOf(currentTime.getMinutes());
-        OrderModel orderModel = new OrderModel(cartData, date, month, hour, minute, year, totoalValue, true);
-        orderData.add(orderModel);
+        Timestamp curruntTimestamp = new Timestamp(currentTime);
+        Timestamp timestamp;
+        try {
+            parsedDate = dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(parsedDate == null){
+            timestamp = new Timestamp(currentTime);
+        }else {
+             timestamp = new Timestamp(parsedDate);
+        }
+
         DocumentReference documentReference = firestore.collection("users").document(uId).collection("order").document();
         Map<String, Object> data = new HashMap<>();
-        data.put("orderid", orderData);
+        data.put("total", totoalValue);
+        data.put("order_date", curruntTimestamp);
+        data.put("reservation_datetime", timestamp);
+        data.put("payment", true);
+        data.put("items", cartData);
 
         documentReference.set(data).addOnSuccessListener(unused -> {
-            for(int i = 0; i < orderData.get(0).getProdocts().size(); i++){
-                firestore.collection("users").document(uId).collection("cart").document(orderData.get(0)
-                        .getProdocts().get(i).getId())
-                        .delete()
-                        .addOnSuccessListener(unused1 -> {
-                            Toast.makeText(getApplicationContext(), "Order placed successfully!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), HomeScreen.class);
-                            startActivity(intent);
-                        });
+            if(typeString.equals("cart")){
+                for(int i = 0; i < cartData.size(); i++){
+                    firestore.collection("users").document(uId).collection("cart").document(cartData.get(i).getId())
+                            .delete()
+                            .addOnSuccessListener(unused1 -> {
+                            });
+                }
             }
+            Toast.makeText(getApplicationContext(), "Order placed successfully!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(), HomeScreen.class);
+            startActivity(intent);
         }).addOnFailureListener(e -> Log.d("error", e.toString()));
     }
 
