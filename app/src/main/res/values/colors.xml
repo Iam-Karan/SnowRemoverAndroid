@@ -12,4 +12,6 @@
     <color name="darkblue">#3463DB</color>
     <color name="red">#FFFF0000</color>
     <color name="inactivecolor">#FF696969</color>
+    <color name="green">#FF00FF00</color>
+    <color name="yello">#FFFFFF00</color>
 </resources>

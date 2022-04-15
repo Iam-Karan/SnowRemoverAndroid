@@ -1,5 +1,6 @@
 package com.snowremover.snowremoverandroid;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
@@ -10,6 +11,14 @@ import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,6 +26,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.stripe.android.PaymentConfiguration;
+import com.stripe.android.paymentsheet.PaymentSheet;
+import com.stripe.android.paymentsheet.PaymentSheetResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +46,14 @@ import java.util.Random;
 public class ConfrimOrderActivity extends AppCompatActivity {
 
     Toolbar toolbar;
+
+    private final String secretKey = "sk_test_51KnTwUEeWLLzf6XRkIcLGeU3HdIc8NB2VdRbFbzT2TZvOylvdeMjgFasmnlyDlPPt26cduvAf9zqmsZXwufJkrZn00Pk94nVbP";
+    private final String publishKey = "pk_test_51KnTwUEeWLLzf6XRPYGwXPOkSE98yeUkbjchJLFOQy8i9Gi6cnqW2AG0QkV2IfSXhxgY1cb0gFUl2X40vG4VStbA00p865OQIv";
+    PaymentSheet paymentSheet;
+    String customerId;
+    String emphericalKey;
+    String clientSecret;
+
     ImageButton backImageButton;
     double subTotalValue = 0;
     private double taxValue = 15.0;
@@ -38,7 +62,6 @@ public class ConfrimOrderActivity extends AppCompatActivity {
     String  adddressLineString, cityString, zipcodeString, stateString, countryString;
     double totoalValue;
     ArrayList<CartModel> cartData = new ArrayList<>();
-    ArrayList<OrderModel> orderData = new ArrayList<>();
     FirebaseFirestore firestore;
     String uId;
     AppCompatButton buy;
@@ -72,7 +95,7 @@ public class ConfrimOrderActivity extends AppCompatActivity {
 
         buy.setOnClickListener(view -> {
             if(fatchAndValidate()){
-                setOrder();
+                paymentFlow();
             }
         });
         backImageButton.setOnClickListener(view -> {
@@ -182,7 +205,7 @@ public class ConfrimOrderActivity extends AppCompatActivity {
                         }
                     }).addOnFailureListener(e -> Log.d("error", e.toString()));
         }
-
+        paymentConfigiration();
     }
 
     public void setData(){
@@ -197,6 +220,7 @@ public class ConfrimOrderActivity extends AppCompatActivity {
         discount.setText("$"+discountValue);
         subtotal.setText("$"+subTotalValue);
         total.setText("$"+totoalValue);
+        buy.setText("Pay "+totoalValue);
     }
 
     public static double round(double value, int places) {
@@ -281,5 +305,150 @@ public class ConfrimOrderActivity extends AppCompatActivity {
             startActivity(intent);
         }).addOnFailureListener(e -> Log.d("error", e.toString()));
     }
+
+    public void paymentConfigiration(){
+        PaymentConfiguration.init(this, publishKey);
+
+        paymentSheet = new PaymentSheet(this, paymentSheetResult -> {
+            onPaymentResult(paymentSheetResult);
+        });
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                "https://api.stripe.com/v1/customers",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject object = new JSONObject(response);
+                            customerId = object.getString("id");
+                            Log.d("customer Id", customerId);
+                            getEmphericalKey(customerId);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new HashMap<>();
+                header.put("Authorization", "Bearer "+secretKey);
+                return header;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(ConfrimOrderActivity.this);
+        requestQueue.add(stringRequest);
+    }
+
+    private void onPaymentResult(PaymentSheetResult paymentSheetResult) {
+        if(paymentSheetResult instanceof  PaymentSheetResult.Completed){
+            setOrder();
+        }
+    }
+
+    public void getEmphericalKey(String customerId){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                "https://api.stripe.com/v1/ephemeral_keys",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject object = new JSONObject(response);
+                            emphericalKey = object.getString("id");
+                            Log.d("Empherical Key", emphericalKey);
+                            getClientSecret(customerId, emphericalKey);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new HashMap<>();
+                header.put("Authorization", "Bearer "+secretKey);
+                header.put("Stripe-Version", "2020-08-27");
+                return header;
+            }
+
+            @Nullable
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("customer", customerId);
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(ConfrimOrderActivity.this);
+        requestQueue.add(stringRequest);
+    }
+
+    private void getClientSecret(String customerId, String emphericalKey) {
+        double intTotal = totoalValue * 100;
+        int totalInt = (int) intTotal;
+        String finalTotal = String.valueOf(totalInt);
+        Toast.makeText(getApplicationContext(), finalTotal, Toast.LENGTH_LONG).show();
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                "https://api.stripe.com/v1/payment_intents",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject object = new JSONObject(response);
+                            clientSecret = object.getString("client_secret");
+                            Log.d("Client secret key Id", clientSecret);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header = new HashMap<>();
+                header.put("Authorization", "Bearer "+secretKey);
+                return header;
+            }
+
+            @Nullable
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("customer", customerId);
+                params.put("amount", finalTotal);
+                params.put("currency", "cad");
+                params.put("automatic_payment_methods[enabled]", "true");
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(ConfrimOrderActivity.this);
+        requestQueue.add(stringRequest);
+    }
+
+    private void paymentFlow() {
+        paymentSheet.presentWithPaymentIntent(
+                clientSecret, new PaymentSheet.Configuration("Snow remover",
+                        new PaymentSheet.CustomerConfiguration(
+                                customerId,
+                                emphericalKey
+                        ))
+        );
+    }
+
 
 }

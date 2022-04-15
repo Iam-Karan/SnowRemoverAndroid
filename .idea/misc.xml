@@ -7,6 +7,7 @@
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/drawable-v24/rouned_bg.xml" value="0.1525" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/drawable/blue_buttun_bg.xml" value="0.1675" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/drawable/card_background.xml" value="0.1525" />
+        <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/drawable/green_round_bg.xml" value="0.2015" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/drawable/green_round_btn.xml" value="0.1675" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/drawable/ic_round_add_24.xml" value="0.1675" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/drawable/ic_round_add_photo_alternate_24.xml" value="0.1675" />
@@ -25,10 +26,12 @@
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/drawable/pink_round_btn.xml" value="0.1675" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/drawable/product_description_buttun_bg.xml" value="0.1675" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/drawable/red_round_bg.xml" value="0.1675" />
+        <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/drawable/red_transparant_round_bg.xml" value="0.2015" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/drawable/rounded_blue_bg.xml" value="0.1525" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/drawable/rounded_edittext.xml" value="0.1525" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/drawable/spinner_bg.xml" value="0.1525" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/drawable/white_round_bg.xml" value="0.1675" />
+        <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/drawable/yello_transparant_round_bg.xml" value="0.2015" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/about_us_fragment.xml" value="0.25" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/activity_admin_main.xml" value="0.25" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/activity_admin_person_detail.xml" value="0.25" />
@@ -43,13 +46,17 @@
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/activity_sign_in_screen.xml" value="0.25" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/activity_sign_up_screen.xml" value="0.25" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/activity_user_profile.xml" value="0.25" />
+        <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/admin_feedback_card.xml" value="0.25" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/cart_screen_card.xml" value="0.25" />
+        <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/customer_order_card.xml" value="0.25" />
+        <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/customer_order_item_card.xml" value="0.25" />
+        <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/fragment_admin_feedbacks.xml" value="0.25" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/fragment_admin_home.xml" value="0.25" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/fragment_admin_orders.xml" value="0.25" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/fragment_admin_person.xml" value="0.25" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/fragment_home.xml" value="0.25" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/home_screen_card.xml" value="0.25" />
-        <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/order_fragment.xml" value="0.1" />
+        <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/order_fragment.xml" value="0.264" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/person_fragment.xml" value="0.25" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/layout/product_detailpage_card.xml" value="0.25" />
         <entry key="..\:/Users/patel/AndroidStudioProjects/SnowRemoverAndroid/app/src/main/res/menu/admin_bottom_nav_menu.xml" value="0.25" />

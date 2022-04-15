@@ -87,12 +87,14 @@ public class HomeFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                if(!s.isEmpty()){
-                    adapter.search(s, copyItemData);
-                    return true;
-                }
+                adapter.search(s, copyItemData);
                 return true;
             }
+        });
+
+        searchView.setOnCloseListener(() -> {
+            adapter.search("", copyItemData);
+            return false;
         });
 
         filterBtn.setOnClickListener(view -> {

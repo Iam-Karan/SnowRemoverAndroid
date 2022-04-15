@@ -45,7 +45,6 @@ public class ProductDetailActivity extends AppCompatActivity {
     private ImageView productImage;
     private AppCompatButton orderProduct, reserveProduct;
     private YouTubePlayerView youTubePlayerView;
-    private ArrayList<OrderModel> orderData;
     private ArrayList<CartModel> cartdata;
     String youtubeUrl = "https://www.youtube.com/watch?v=";
     String url;
@@ -74,7 +73,6 @@ public class ProductDetailActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         mFirebaseUser = mAuth.getCurrentUser();
 
-        orderData = new ArrayList<>();
         cartdata = new ArrayList<>();
         findID();
         setData();
