@@ -43,7 +43,6 @@ public class PersonDetailActivity extends AppCompatActivity {
     double price;
     String imageurl;
     int count = 1;
-    private ArrayList<OrderModel> orderData;
     private ArrayList<CartModel> cartdata;
     double totalPrice = 0;
     ArrayList<String> personIds = new ArrayList<>();
@@ -60,7 +59,6 @@ public class PersonDetailActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         mFirebaseUser = mAuth.getCurrentUser();
 
-        orderData = new ArrayList<>();
         cartdata = new ArrayList<>();
         findID();
         setData();

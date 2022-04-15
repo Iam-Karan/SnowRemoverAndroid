@@ -46,7 +46,6 @@ public class CartActivity extends AppCompatActivity {
     private RelativeLayout cartLayout, errorLayout;
     private RecyclerView cartRecyclerView;
     private CartAdapterRecyclerView adapter;
-    private ArrayList<OrderModel> orderData;
     double totalPrice = 0;
     FirebaseUser mFirebaseUser;
     String uId = "";
@@ -64,7 +63,6 @@ public class CartActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        orderData = new ArrayList<>();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         mFirebaseUser = mAuth.getCurrentUser();

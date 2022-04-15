@@ -62,7 +62,6 @@ public class ConfrimOrderActivity extends AppCompatActivity {
     String  adddressLineString, cityString, zipcodeString, stateString, countryString;
     double totoalValue;
     ArrayList<CartModel> cartData = new ArrayList<>();
-    ArrayList<OrderModel> orderData = new ArrayList<>();
     FirebaseFirestore firestore;
     String uId;
     AppCompatButton buy;

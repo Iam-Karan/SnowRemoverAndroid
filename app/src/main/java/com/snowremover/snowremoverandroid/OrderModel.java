@@ -4,33 +4,31 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class OrderModel implements Serializable {
-    public ArrayList<CartModel> prodocts;
+
+    public String id;
     public String date;
-    public String month;
-    public String hour;
-    public String minute;
-    public String year;
-    public double totalPrice;
-    public boolean payment;
+    public String itemCount;
+    public String total;
+    public String ImageUrl;
+    public boolean isDeliver;
+    public ArrayList<OrdrItemModel> prodocts;
 
-    public OrderModel(ArrayList<CartModel> prodocts, String date, String month, String hour, String minute, String year, double totalPrice, boolean payment) {
-        this.prodocts = prodocts;
+    public OrderModel(String id, String date, String itemCount, String total, String imageUrl, boolean isDeliver, ArrayList<OrdrItemModel> prodocts) {
+        this.id = id;
         this.date = date;
-        this.month = month;
-        this.hour = hour;
-        this.minute = minute;
-        this.year = year;
-        this.totalPrice = totalPrice;
-        this.payment = payment;
-    }
-
-
-    public ArrayList<CartModel> getProdocts() {
-        return prodocts;
-    }
-
-    public void setProdocts(ArrayList<CartModel> prodocts) {
+        this.itemCount = itemCount;
+        this.total = total;
+        ImageUrl = imageUrl;
+        this.isDeliver = isDeliver;
         this.prodocts = prodocts;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getDate() {
@@ -41,52 +39,43 @@ public class OrderModel implements Serializable {
         this.date = date;
     }
 
-    public String getMonth() {
-        return month;
+    public String getItemCount() {
+        return itemCount;
     }
 
-    public void setMonth(String month) {
-        this.month = month;
+    public void setItemCount(String itemCount) {
+        this.itemCount = itemCount;
     }
 
-    public String getHour() {
-        return hour;
+    public String getTotal() {
+        return total;
     }
 
-    public void setHour(String hour) {
-        this.hour = hour;
+    public void setTotal(String total) {
+        this.total = total;
     }
 
-    public String getMinute() {
-        return minute;
+    public String getImageUrl() {
+        return ImageUrl;
     }
 
-    public void setMinute(String minute) {
-        this.minute = minute;
+    public void setImageUrl(String imageUrl) {
+        ImageUrl = imageUrl;
     }
 
-    public String getYear() {
-        return year;
+    public boolean isDeliver() {
+        return isDeliver;
     }
 
-    public void setYear(String year) {
-        this.year = year;
+    public void setDeliver(boolean deliver) {
+        isDeliver = deliver;
     }
 
-    public double getTotalPrice() {
-        return totalPrice;
+    public ArrayList<OrdrItemModel> getProdocts() {
+        return prodocts;
     }
 
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setProdocts(ArrayList<OrdrItemModel> prodocts) {
+        this.prodocts = prodocts;
     }
-
-    public boolean isPayment() {
-        return payment;
-    }
-
-    public void setPayment(boolean payment) {
-        this.payment = payment;
-    }
-
 }

@@ -113,7 +113,6 @@ public class CartAdapterRecyclerView extends RecyclerView.Adapter<CartAdapterRec
 
     @Override
     public int getItemCount() {
-        Log.d("check count", "checked");
         return cartProductData.size();
     }
 
