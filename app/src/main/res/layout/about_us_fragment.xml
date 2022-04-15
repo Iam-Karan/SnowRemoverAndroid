@@ -34,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus."
+                android:text="Snow removal appliocation was built to make your life easier. We give you everything you need to clean your way to reach out your destination in snow season.\n\nWe're here to help you. You can use our equipments according to thier need.Also, hire experienced person to remove snow.Our primary approach to solve your snow problem. You can easily access our app at any time and use facilities accordingly.Year after year, we continue to expand and improve our facilities to meet the needs of our users."
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 

@@ -92,10 +92,8 @@ public class AboutUsFragment extends Fragment {
         Map<String, Object> feedbackMap = new HashMap<>();
         feedbackMap.put("name", nameValue);
         feedbackMap.put("email", emailValue);
-        feedbackMap.put("feedback", feedbackValue);
-
-
-
+        feedbackMap.put("message", feedbackValue);
+        feedbackMap.put("read", false);
 
         firestore.collection("feedback").document().set(feedbackMap).addOnSuccessListener(unused -> {
             Toast.makeText(view.getContext(), "Feedback added!", Toast.LENGTH_LONG).show();
