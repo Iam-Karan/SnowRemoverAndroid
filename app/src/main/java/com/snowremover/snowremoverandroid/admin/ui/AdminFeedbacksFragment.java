@@ -97,7 +97,7 @@ public class AdminFeedbacksFragment extends Fragment {
     }
 
     private void setData(){
-        firestore.collection("feedback").get()
+        firestore.collection("contactMessages").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
 
