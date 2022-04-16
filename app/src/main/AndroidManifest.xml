@@ -15,8 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SnowRemoverAndroid">
         <activity
+            android:name=".OrderDetailsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.SnowRemoverAndroid"/>
+        <activity
             android:name=".ReserveActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.SnowRemoverAndroid"/>
         <activity
             android:name=".ConfrimOrderActivity"
             android:exported="false"
