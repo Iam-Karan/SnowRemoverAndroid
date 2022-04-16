@@ -95,7 +95,7 @@ public class AboutUsFragment extends Fragment {
         feedbackMap.put("message", feedbackValue);
         feedbackMap.put("read", false);
 
-        firestore.collection("feedback").document().set(feedbackMap).addOnSuccessListener(unused -> {
+        firestore.collection("contactMessages").document().set(feedbackMap).addOnSuccessListener(unused -> {
             Toast.makeText(view.getContext(), "Feedback added!", Toast.LENGTH_LONG).show();
             name.setText("");
             name.setHint("Name");

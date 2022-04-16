@@ -20,23 +20,19 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.snowremover.snowremoverandroid.CartActivity;
-import com.snowremover.snowremoverandroid.CartAdapterRecyclerView;
-import com.snowremover.snowremoverandroid.CartModel;
 import com.snowremover.snowremoverandroid.OrderAdapter;
 import com.snowremover.snowremoverandroid.OrderModel;
 import com.snowremover.snowremoverandroid.OrdrItemModel;
 import com.snowremover.snowremoverandroid.R;
 import com.snowremover.snowremoverandroid.SignInScreen;
 import com.snowremover.snowremoverandroid.UserProfileActivity;
-import com.snowremover.snowremoverandroid.ui.OrderItemAdapter;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +43,7 @@ public class OrderFragment extends Fragment {
 
     private OrderViewModel mViewModel;
     private LinearLayout userInfoLayout;
+    private final String userNameValue = "Customer";
     private TextView userName, numberOfItemCart;
     private ImageButton cartBtn;
     private FirebaseUser mFirebaseUser;
@@ -83,13 +80,13 @@ public class OrderFragment extends Fragment {
         });
 
         userInfoLayout.setOnClickListener(view1 -> {
+            Intent intent;
             if(mFirebaseUser != null){
-                Intent intent = new Intent(getContext(), UserProfileActivity.class);
-                startActivity(intent);
+                intent = new Intent(getContext(), UserProfileActivity.class);
             }else {
-                Intent intent = new Intent(getContext(), SignInScreen.class);
-                startActivity(intent);
+                intent = new Intent(getContext(), SignInScreen.class);
             }
+            startActivity(intent);
 
         });
         return view;
@@ -111,7 +108,7 @@ public class OrderFragment extends Fragment {
     }
 
     private void setAdapter() {
-        adapter = new OrderAdapter(orderData, getContext());
+        adapter = new OrderAdapter(orderData, getContext(), userNameValue);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         ordrRecyclerView.setLayoutManager(layoutManager);
         ordrRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -160,13 +157,14 @@ public class OrderFragment extends Fragment {
 
     public void setOrder(){
         firestore.collection("users").document(uId).collection("order").get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
+                .addOnSuccessListener(queryDocumentSnapshots1 -> {
+                    if (!queryDocumentSnapshots1.isEmpty()) {
 
-                        List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                        for (DocumentSnapshot d : list) {
+                        List<DocumentSnapshot> list1 = queryDocumentSnapshots1.getDocuments();
+                        for (DocumentSnapshot d : list1) {
                             ArrayList<OrdrItemModel> orderitemtDataArrayList = new ArrayList<>();
                             String id = d.getId();
+
                             Timestamp date = (Timestamp) d.getData().get("order_date");
                             Date dateDate = date.toDate();
                             String dateString = dateDate.toString();
@@ -191,14 +189,25 @@ public class OrderFragment extends Fragment {
 
                             OrderModel data = new OrderModel(id, dateString, countString, price, imageUrl, isOrderd, orderitemtDataArrayList);
                             orderData.add(data);
-                            isOrderd = !isOrderd;
                         }
 
                     } else {
                         Toast.makeText(getContext(), "No data found in Database", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(e -> Toast.makeText(getContext(), "Fail to get the data.", Toast.LENGTH_SHORT).show())
-                .addOnCompleteListener(task -> setAdapter());
+            .addOnSuccessListener(queryDocumentSnapshots -> {
+                 for(int i = 0; i < orderData.size(); i++){
+
+                    int finalI = i;
+                    Log.d("id", orderData.get(i).getId());
+                    firestore.collection("orders").document(orderData.get(i).getId()).get().addOnSuccessListener(documentSnapshot -> {
+                        isOrderd = (boolean) documentSnapshot.getData().get("isDelivered");
+                        orderData.get(finalI).setDeliver(isOrderd);
+                    }).addOnFailureListener(e -> Log.d("error", e.toString()))
+                            .addOnCompleteListener(task -> setAdapter());
+                }
+            });
+
     }
 
 }

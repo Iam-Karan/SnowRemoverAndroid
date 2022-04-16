@@ -67,7 +67,7 @@ public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.Feedba
 
     public void readFeedback(String id){
 
-        firestore.collection("feedback").document(id).update("read", false).addOnSuccessListener(new OnSuccessListener<Void>() {
+        firestore.collection("contactMessages").document(id).update("read", false).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 feedbacks.clear();

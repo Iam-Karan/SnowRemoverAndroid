@@ -1,5 +1,6 @@
 package com.snowremover.snowremoverandroid;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -19,6 +20,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -64,6 +67,7 @@ public class ConfrimOrderActivity extends AppCompatActivity {
     ArrayList<CartModel> cartData = new ArrayList<>();
     FirebaseFirestore firestore;
     String uId;
+    String orderId = "";
     AppCompatButton buy;
     String dateString, typeString, totalString, idString, hoursString, quantityString;;
 
@@ -290,9 +294,11 @@ public class ConfrimOrderActivity extends AppCompatActivity {
         data.put("reservation_datetime", timestamp);
         data.put("payment", true);
         data.put("items", cartData);
+        data.put("address", adddressLineString+", "+cityString+", "+stateString+", "+cityString+" - "+zipcodeString);
 
-        documentReference.set(data).addOnSuccessListener(unused -> {
+        documentReference.set(data).addOnSuccessListener(task -> {
             if(typeString.equals("cart")){
+
                 for(int i = 0; i < cartData.size(); i++){
                     firestore.collection("users").document(uId).collection("cart").document(cartData.get(i).getId())
                             .delete()
@@ -304,6 +310,24 @@ public class ConfrimOrderActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), HomeScreen.class);
             startActivity(intent);
         }).addOnFailureListener(e -> Log.d("error", e.toString()));
+
+        orderId = documentReference.getId();
+        Map<String, Object> data1 = new HashMap<>();
+        data1.put("total", totoalValue);
+        data1.put("order_date", curruntTimestamp);
+        data1.put("reservation_datetime", timestamp);
+        data1.put("payment", true);
+        data1.put("items", cartData);
+        data1.put("userId", uId);
+        data1.put("feedback", "");
+        data1.put("isDelivered", false);
+        data1.put("address", adddressLineString+", "+cityString+", "+stateString+", "+cityString+" - "+zipcodeString);
+
+        firestore.collection("orders").document(orderId).set(data1).addOnSuccessListener(unused -> {
+
+        }).addOnFailureListener(e -> {
+
+        });
     }
 
     public void paymentConfigiration(){

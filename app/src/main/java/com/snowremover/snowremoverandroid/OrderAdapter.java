@@ -1,6 +1,7 @@
 package com.snowremover.snowremoverandroid;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.snowremover.snowremoverandroid.ui.OrderItemAdapter;
 import com.squareup.picasso.Picasso;
 
@@ -21,10 +23,12 @@ import java.util.ArrayList;
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder>{
     private ArrayList<OrderModel> orderData;
     private Context context;
+    private String userName;
 
-    public OrderAdapter(ArrayList<OrderModel> orderData, Context context) {
+    public OrderAdapter(ArrayList<OrderModel> orderData, Context context, String userName) {
         this.orderData = orderData;
         this.context = context;
+        this.userName = userName;
     }
 
     public class OrderViewHolder extends RecyclerView.ViewHolder {
@@ -33,6 +37,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         private AppCompatButton isOrderd, isNotOrder;
         private ImageView orderImage;
         private RecyclerView orderRecyclerView;
+        private MaterialCardView cardView;
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
             orderId = itemView.findViewById(R.id.order_name);
@@ -43,6 +48,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             isOrderd = itemView.findViewById(R.id.order_is_deliver);
             isNotOrder = itemView.findViewById(R.id.order_is_not_deliver);
             orderRecyclerView = itemView.findViewById(R.id.oder_items_recyclerview);
+            cardView = itemView.findViewById(R.id.order_card);
         }
     }
 
@@ -79,6 +85,13 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             holder.isOrderd.setVisibility(View.GONE);
             holder.isNotOrder.setVisibility(View.VISIBLE);
         }
+
+        holder.cardView.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), OrderDetailsActivity.class);
+            intent.putExtra("orderId", orderData.get(position).getId());
+            intent.putExtra("userName", userName);
+            view.getContext().startActivity(intent);
+        });
     }
 
     @Override
