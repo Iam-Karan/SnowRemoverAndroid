@@ -1,5 +1,7 @@
-package com.snowremover.snowremoverandroid.admin;
+package com.snowremover.snowremoverandroid.admin.adapter;
 
+import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,24 +9,29 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.snowremover.snowremoverandroid.CartAdapterRecyclerView;
 import com.snowremover.snowremoverandroid.R;
+import com.snowremover.snowremoverandroid.admin.model.FeedbackModel;
 
 import java.util.ArrayList;
 
 public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.FeedbackViewHolder>{
     private ArrayList<FeedbackModel> feedbacks;
     private ArrayList<FeedbackModel> copyData;
+    private Context context;
     FirebaseFirestore firestore;
 
-    public FeedbackAdapter(ArrayList<FeedbackModel> feedbacks, ArrayList<FeedbackModel> copyData) {
+    public FeedbackAdapter(ArrayList<FeedbackModel> feedbacks, ArrayList<FeedbackModel> copyData, Context context) {
         this.feedbacks = feedbacks;
         this.copyData = copyData;
+        this.context = context;
     }
 
     public class FeedbackViewHolder extends RecyclerView.ViewHolder{
@@ -55,8 +62,18 @@ public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.Feedba
         holder.email.setText(feedbacks.get(position).getEmail());
         holder.feedback.setText(feedbacks.get(position).getFeedback());
 
-        holder.isRead.setOnClickListener(view -> {copyData.remove(position);
-            readFeedback(feedbacks.get(position).getId());
+        if(feedbacks.get(position).isRead() == true){
+            holder.isRead.setText("Unread");
+            holder.isRead.setBackground(ContextCompat.getDrawable(context, R.drawable.green_round_btn));
+        }else {
+            holder.isRead.setText("Read");
+            holder.isRead.setBackground(ContextCompat.getDrawable(context, R.drawable.pink_round_btn));
+        }
+
+        holder.isRead.setOnClickListener(view -> {
+            boolean isnotVlaue = !feedbacks.get(position).isRead();
+            copyData.get(position).setRead(isnotVlaue);
+            readFeedback(feedbacks.get(position).getId(), isnotVlaue);
         });
     }
 
@@ -65,21 +82,23 @@ public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.Feedba
         return feedbacks.size();
     }
 
-    public void readFeedback(String id){
+    public void readFeedback(String id, boolean value){
+        firestore = FirebaseFirestore.getInstance();
 
-        firestore.collection("contactMessages").document(id).update("read", false).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                feedbacks.clear();
-                feedbacks.addAll(copyData);
+        firestore.collection("contactMessages").document(id).update("read", value).addOnSuccessListener(unused -> {
 
+        }).addOnFailureListener(e -> {
+
+        }).addOnCompleteListener(task -> {
+            feedbacks.clear();
+            for(int i = 0; i < copyData.size(); i++){
+                if(value && copyData.get(i).isRead() != value){
+                    feedbacks.add(copyData.get(i));
+                }
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
+            notifyDataSetChanged();
         });
+
     }
 
 }

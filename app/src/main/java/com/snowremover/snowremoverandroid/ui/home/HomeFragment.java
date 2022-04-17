@@ -25,8 +25,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.snowremover.snowremoverandroid.HomePageRecyclerView;
-import com.snowremover.snowremoverandroid.ProductData;
+import com.snowremover.snowremoverandroid.customer.adapter.HomePageRecyclerView;
+import com.snowremover.snowremoverandroid.customer.model.ProductData;
 import com.snowremover.snowremoverandroid.R;
 import com.snowremover.snowremoverandroid.databinding.FragmentHomeBinding;
 import com.squareup.picasso.Picasso;

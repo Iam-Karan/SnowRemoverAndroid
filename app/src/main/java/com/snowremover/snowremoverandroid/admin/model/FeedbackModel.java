@@ -1,4 +1,4 @@
-package com.snowremover.snowremoverandroid.admin;
+package com.snowremover.snowremoverandroid.admin.model;
 
 public class FeedbackModel {
     String id;

@@ -1,10 +1,8 @@
-package com.snowremover.snowremoverandroid;
+package com.snowremover.snowremoverandroid.customer.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +10,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
+import com.snowremover.snowremoverandroid.PersonDetailActivity;
+import com.snowremover.snowremoverandroid.ProductDetailActivity;
+import com.snowremover.snowremoverandroid.R;
+import com.snowremover.snowremoverandroid.customer.model.ProductData;
 
 import java.util.ArrayList;
 import java.util.Collections;

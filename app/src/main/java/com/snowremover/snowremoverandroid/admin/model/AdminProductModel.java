@@ -1,4 +1,4 @@
-package com.snowremover.snowremoverandroid.admin;
+package com.snowremover.snowremoverandroid.admin.model;
 
 public class AdminProductModel {
     String id;
@@ -6,7 +6,7 @@ public class AdminProductModel {
     String quantity;
     String name;
     String imageUrl;
-    boolean archive;
+    public boolean archive;
 
     public AdminProductModel(String id, String type, String quantity, String name, String imageUrl, boolean archive) {
         this.id = id;

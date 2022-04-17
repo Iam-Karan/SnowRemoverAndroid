@@ -1,4 +1,4 @@
-package com.snowremover.snowremoverandroid.ui;
+package com.snowremover.snowremoverandroid.customer.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,8 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.snowremover.snowremoverandroid.CartModel;
-import com.snowremover.snowremoverandroid.OrdrItemModel;
+import com.snowremover.snowremoverandroid.customer.model.OrdrItemModel;
 import com.snowremover.snowremoverandroid.R;
 
 import java.util.ArrayList;
