@@ -1,4 +1,4 @@
-package com.snowremover.snowremoverandroid;
+package com.snowremover.snowremoverandroid.customer.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

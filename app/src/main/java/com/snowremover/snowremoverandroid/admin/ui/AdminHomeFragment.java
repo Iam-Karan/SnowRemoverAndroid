@@ -7,32 +7,22 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.snowremover.snowremoverandroid.CartAdapterRecyclerView;
-import com.snowremover.snowremoverandroid.CartModel;
-import com.snowremover.snowremoverandroid.HomePageRecyclerView;
-import com.snowremover.snowremoverandroid.ProductData;
-import com.snowremover.snowremoverandroid.ProductDetailActivity;
 import com.snowremover.snowremoverandroid.R;
-import com.snowremover.snowremoverandroid.admin.AdminProductAdapter;
+import com.snowremover.snowremoverandroid.admin.adapter.AdminProductAdapter;
 import com.snowremover.snowremoverandroid.admin.AdminProductDetailActivity;
-import com.snowremover.snowremoverandroid.admin.AdminProductModel;
+import com.snowremover.snowremoverandroid.admin.model.AdminProductModel;
 
 import java.util.ArrayList;
 import java.util.List;

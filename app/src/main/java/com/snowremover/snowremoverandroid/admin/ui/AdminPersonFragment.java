@@ -20,11 +20,10 @@ import android.widget.Toast;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.snowremover.snowremoverandroid.CartModel;
 import com.snowremover.snowremoverandroid.R;
 import com.snowremover.snowremoverandroid.admin.AdminPersonDetailActivity;
-import com.snowremover.snowremoverandroid.admin.AdminProductAdapter;
-import com.snowremover.snowremoverandroid.admin.AdminProductModel;
+import com.snowremover.snowremoverandroid.admin.adapter.AdminProductAdapter;
+import com.snowremover.snowremoverandroid.admin.model.AdminProductModel;
 
 import java.util.ArrayList;
 import java.util.List;

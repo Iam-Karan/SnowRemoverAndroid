@@ -18,15 +18,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.snowremover.snowremoverandroid.HomePageRecyclerView;
-import com.snowremover.snowremoverandroid.ProductData;
+import com.snowremover.snowremoverandroid.customer.adapter.HomePageRecyclerView;
+import com.snowremover.snowremoverandroid.customer.model.ProductData;
 import com.snowremover.snowremoverandroid.R;
 
 import java.util.ArrayList;

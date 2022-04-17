@@ -17,18 +17,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.snowremover.snowremoverandroid.HomeScreen;
-import com.snowremover.snowremoverandroid.OrderAdapter;
-import com.snowremover.snowremoverandroid.OrderModel;
-import com.snowremover.snowremoverandroid.OrdrItemModel;
+import com.snowremover.snowremoverandroid.customer.adapter.OrderAdapter;
+import com.snowremover.snowremoverandroid.customer.model.OrderModel;
+import com.snowremover.snowremoverandroid.customer.model.OrdrItemModel;
 import com.snowremover.snowremoverandroid.R;
-import com.snowremover.snowremoverandroid.SignInScreen;
 import com.snowremover.snowremoverandroid.UserProfileActivity;
 
 import java.util.ArrayList;

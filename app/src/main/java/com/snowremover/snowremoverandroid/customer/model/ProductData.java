@@ -1,13 +1,13 @@
-package com.snowremover.snowremoverandroid;
+package com.snowremover.snowremoverandroid.customer.model;
 
 public class ProductData {
 
     String id;
-    String name;
+    public String name;
     String image;
     float price;
-    int numOfUnit;
-    String type;
+    public int numOfUnit;
+    public String type;
 
     public ProductData(String id, String name, String image, float price, int numOfUnit, String type) {
         this.id = id;

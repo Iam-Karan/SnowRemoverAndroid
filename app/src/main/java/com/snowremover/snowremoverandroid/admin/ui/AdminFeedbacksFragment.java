@@ -10,14 +10,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.snowremover.snowremoverandroid.CartModel;
 import com.snowremover.snowremoverandroid.R;
-import com.snowremover.snowremoverandroid.admin.FeedbackAdapter;
-import com.snowremover.snowremoverandroid.admin.FeedbackModel;
+import com.snowremover.snowremoverandroid.admin.adapter.FeedbackAdapter;
+import com.snowremover.snowremoverandroid.admin.model.FeedbackModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,9 @@ public class AdminFeedbacksFragment extends Fragment {
     private RecyclerView feedBackRecyclerView;
     private FeedbackAdapter adapter;
     FirebaseFirestore firestore;
+    private RadioGroup radioGroup;
+    private RadioButton radioButton;
+    private boolean radioIsRead = false;
     public AdminFeedbacksFragment() {
         // Required empty public constructor
     }
@@ -83,20 +87,33 @@ public class AdminFeedbacksFragment extends Fragment {
         copyFeedbacks = new ArrayList<>();
         firestore = FirebaseFirestore.getInstance();
         feedBackRecyclerView = view.findViewById(R.id.admin_feedback_recyclerview);
-        setData();
+        radioGroup = view.findViewById(R.id.feedback_radio_group);
+        setData(radioIsRead);
 
+        radioGroup.setOnCheckedChangeListener((radioGroup, i) -> {
+            if(i == R.id.radio0){
+                radioIsRead = false;
+                setData(radioIsRead);
+            }else {
+                radioIsRead = true;
+                setData(radioIsRead);
+            }
+
+        });
         return view;
     }
 
     private void setAdapter(){
-        adapter = new FeedbackAdapter(feedbacks, copyFeedbacks);
+        adapter = new FeedbackAdapter(feedbacks, copyFeedbacks, getContext());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         feedBackRecyclerView.setLayoutManager(layoutManager);
         feedBackRecyclerView.setItemAnimator(new DefaultItemAnimator());
         feedBackRecyclerView.setAdapter(adapter);
     }
 
-    private void setData(){
+    private void setData(boolean radioIsRead){
+        feedbacks = new ArrayList<>();
+        copyFeedbacks = new ArrayList<>();
         firestore.collection("contactMessages").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -111,15 +128,17 @@ public class AdminFeedbacksFragment extends Fragment {
                             boolean isRead = (boolean) d.getData().get("read");
 
                             FeedbackModel model = new FeedbackModel(id, name, email, feedback, isRead);
-                            if(!isRead){
+                            if(radioIsRead == isRead){
                                 feedbacks.add(model);
                             }
+                            copyFeedbacks.add(model);
                         }
-                        copyFeedbacks.addAll(feedbacks);
                     } else {
                         Toast.makeText(getContext(), "No data found in Database", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(e -> Toast.makeText(getContext(), "Fail to get the data.", Toast.LENGTH_SHORT).show())
-                .addOnCompleteListener(task -> setAdapter());
+                .addOnCompleteListener(task -> {
+                    setAdapter();
+                });
     }
 }

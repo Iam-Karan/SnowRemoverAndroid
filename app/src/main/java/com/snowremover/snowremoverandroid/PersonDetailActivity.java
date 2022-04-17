@@ -22,6 +22,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.snowremover.snowremoverandroid.customer.model.CartModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;

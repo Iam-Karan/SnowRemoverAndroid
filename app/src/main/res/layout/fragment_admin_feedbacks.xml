@@ -6,7 +6,43 @@
     android:padding="10dp"
     tools:context=".admin.ui.AdminFeedbacksFragment">
 
+    <RadioGroup
+        android:id="@+id/feedback_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+
+        <RadioButton
+            android:id="@+id/radio0"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:background="@drawable/radio_flat_selector"
+            android:button="@android:color/transparent"
+            android:checked="true"
+            android:text="Unread"
+            android:textColor="@drawable/radio_flat_text_selector" />
+
+        <RadioButton
+            android:id="@+id/radio1"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/radio_flat_selector"
+            android:button="@android:color/transparent"
+            android:text="Read"
+            android:textColor="@drawable/radio_flat_text_selector" />
+
+    </RadioGroup>
+
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="40dp"
         android:id="@+id/admin_feedback_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
