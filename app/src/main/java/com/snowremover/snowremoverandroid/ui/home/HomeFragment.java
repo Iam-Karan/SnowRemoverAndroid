@@ -1,5 +1,6 @@
 package com.snowremover.snowremoverandroid.ui.home;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
@@ -23,8 +24,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.snowremover.snowremoverandroid.CartActivity;
 import com.snowremover.snowremoverandroid.customer.adapter.HomePageRecyclerView;
 import com.snowremover.snowremoverandroid.customer.model.ProductData;
 import com.snowremover.snowremoverandroid.R;
@@ -49,6 +53,10 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private ArrayList<ProductData> productItemData = new ArrayList<>();
     private ArrayList<ProductData> copyItemData = new ArrayList<>();
+    private ArrayList<String> favouriteItems = new ArrayList<>();
+    private ArrayList<String> productIds = new ArrayList<>();
+    private TextView numberOfItemCart;
+    private ImageButton cartBtn;
     private RecyclerView homeRecyclerView;
     FirebaseFirestore firestore;
     HomePageRecyclerView adapter;
@@ -75,6 +83,8 @@ public class HomeFragment extends Fragment {
         tempreture = root.findViewById(R.id.home_temp);
         place = root.findViewById(R.id.home_location);
         weatherImage = root.findViewById(R.id.home_weather_image);
+        cartBtn = root.findViewById(R.id.order_cart_btn);
+        numberOfItemCart = root.findViewById(R.id.order_cart_item_number);
 
         new getWeather().execute();
 
@@ -112,6 +122,20 @@ public class HomeFragment extends Fragment {
         dropdownMenu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(i == 0){
+                    productItemData.clear();
+                    productItemData.addAll(copyItemData);
+                    setAdapter();
+                }
+                if(i == 1){
+                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                    FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
+                    if(mFirebaseUser != null){
+                        adapter.favorite(favouriteItems, copyItemData);
+                    }else {
+                        Toast.makeText(getContext(), "You need to login first", Toast.LENGTH_SHORT).show();
+                    }
+                }
                 if(i == 2){
                     adapter.available(copyItemData);
                 }
@@ -129,6 +153,10 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        cartBtn.setOnClickListener(view12 -> {
+            Intent intent = new Intent(getContext(), CartActivity.class);
+            startActivity(intent);
+        });
         productItemData = new ArrayList<>();
         setProductsInfo();
 
@@ -173,6 +201,52 @@ public class HomeFragment extends Fragment {
                     copyItemData.addAll(productItemData);
                     setAdapter();
                 });
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
+        if(mFirebaseUser != null){
+          String uId = mFirebaseUser.getUid();
+
+            firestore.collection("users").document(uId).collection("favorite").get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            if(Objects.requireNonNull(task.getResult()).size() > 0) {
+                                for (DocumentSnapshot document : task.getResult()) {
+                                    if (document.exists()) {
+                                        String docId = document.getId();
+                                        favouriteItems.add(docId);
+                                    }
+                                }
+                            } else {
+
+                            }
+                        } else {
+                            Toast.makeText(getContext(), "Task Fails to get Favourite products", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+            productIds.clear();
+            firestore.collection("users").document(uId).collection("cart").get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            if(Objects.requireNonNull(task.getResult()).size() > 0) {
+                                for (DocumentSnapshot document : task.getResult()) {
+                                    if (document.exists()) {
+
+                                        productIds.add(document.getId());
+                                    }
+                                }
+                                if(productIds.size() > 0){
+                                    numberOfItemCart.setVisibility(View.VISIBLE);
+                                    numberOfItemCart.setText(""+productIds.size());
+                                }
+                            }
+                        } else {
+                            Toast.makeText(getContext(), "Task Fails to get cart products", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+
     }
 
 

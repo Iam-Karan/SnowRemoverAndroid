@@ -139,7 +139,6 @@ public class OrderFragment extends Fragment {
                         if(Objects.requireNonNull(task.getResult()).size() > 0) {
                             for (DocumentSnapshot document : task.getResult()) {
                                 if (document.exists()) {
-                                    Log.d("productId", document.getId());
                                     productIds.add(document.getId());
                                 }
                             }
