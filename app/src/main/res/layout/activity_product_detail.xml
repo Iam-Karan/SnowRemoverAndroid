@@ -96,19 +96,22 @@
 
             </LinearLayout>
 
-            <TextView
+            <ScrollView
                 android:layout_weight="2"
-                android:id="@+id/product_description"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:text="Product Description"
-                android:textSize="18sp"
-                android:textColor="@color/inactivecolor"/>
+                android:layout_height="0dp">
+                <TextView
+                    android:id="@+id/product_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Product Description"
+                    android:textSize="18sp"
+                    android:textColor="@color/inactivecolor"/>
+            </ScrollView>
 
             <LinearLayout
-                android:layout_weight="1"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
@@ -133,9 +136,8 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_weight="1"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
@@ -184,9 +186,8 @@
 
             </LinearLayout>
             <LinearLayout
-                android:layout_weight="1"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/product_reserve"

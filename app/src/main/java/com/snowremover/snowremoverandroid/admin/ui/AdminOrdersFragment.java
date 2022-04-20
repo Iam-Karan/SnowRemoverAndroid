@@ -1,5 +1,6 @@
 package com.snowremover.snowremoverandroid.admin.ui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -105,9 +106,12 @@ public class AdminOrdersFragment extends Fragment {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mAuth.getCurrentUser();
         firestore = FirebaseFirestore.getInstance();
-        uId = mFirebaseUser.getUid();
-        setData();
-        setOrder();
+        if(mFirebaseUser != null){
+            firestore = FirebaseFirestore.getInstance();
+            uId = mFirebaseUser.getUid();
+            setData();
+            setOrder();
+        }
 
         signoutBtn.setOnClickListener(view1 -> {
             FirebaseAuth.getInstance().signOut();
@@ -158,6 +162,8 @@ public class AdminOrdersFragment extends Fragment {
     }
 
     public void setOrder(){
+        ProgressDialog progressdialog = new ProgressDialog(getContext());
+        progressdialog.show();
         firestore.collection("orders").get()
                 .addOnSuccessListener(queryDocumentSnapshots1 -> {
                     if (!queryDocumentSnapshots1.isEmpty()) {
@@ -197,7 +203,10 @@ public class AdminOrdersFragment extends Fragment {
                         Toast.makeText(getContext(), "No data found in Database", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(e -> Toast.makeText(getContext(), "Fail to get the data.", Toast.LENGTH_SHORT).show())
-                .addOnSuccessListener(queryDocumentSnapshots -> setAdapter());
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    progressdialog.dismiss();
+                    setAdapter();
+                });
 
     }
 }

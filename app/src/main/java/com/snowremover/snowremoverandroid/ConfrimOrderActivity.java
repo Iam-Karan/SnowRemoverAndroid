@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -121,6 +122,8 @@ public class ConfrimOrderActivity extends AppCompatActivity {
     }
 
     public void getData(){
+        ProgressDialog progressdialog = new ProgressDialog(getApplicationContext());
+        progressdialog.show();
         if(typeString.equals("cart")){
             firestore.collection("users").document(uId).collection("cart").get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -207,6 +210,7 @@ public class ConfrimOrderActivity extends AppCompatActivity {
                         }
                     }).addOnFailureListener(e -> Log.d("error", e.toString()));
         }
+        progressdialog.dismiss();
         paymentConfigiration();
     }
 

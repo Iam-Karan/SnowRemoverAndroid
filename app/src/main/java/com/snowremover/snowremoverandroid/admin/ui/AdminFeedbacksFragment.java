@@ -1,5 +1,6 @@
 package com.snowremover.snowremoverandroid.admin.ui;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -114,6 +115,8 @@ public class AdminFeedbacksFragment extends Fragment {
     private void setData(boolean radioIsRead){
         feedbacks = new ArrayList<>();
         copyFeedbacks = new ArrayList<>();
+        ProgressDialog progressdialog = new ProgressDialog(getContext());
+        progressdialog.show();
         firestore.collection("contactMessages").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -138,6 +141,7 @@ public class AdminFeedbacksFragment extends Fragment {
                     }
                 }).addOnFailureListener(e -> Toast.makeText(getContext(), "Fail to get the data.", Toast.LENGTH_SHORT).show())
                 .addOnCompleteListener(task -> {
+                    progressdialog.dismiss();
                     setAdapter();
                 });
     }

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +27,7 @@ import com.snowremover.snowremoverandroid.customer.model.OrderModel;
 import com.snowremover.snowremoverandroid.customer.model.OrdrItemModel;
 import com.snowremover.snowremoverandroid.customer.adapter.OrderItemAdapter;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
@@ -111,6 +113,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
     }
 
     public void setData(){
+        ProgressDialog progressdialog = new ProgressDialog(getApplicationContext());
+        progressdialog.show();
         firestore.collection("users").document(uId).collection("order").document(orderID).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     DocumentSnapshot d = documentSnapshot;
@@ -119,7 +123,9 @@ public class OrderDetailsActivity extends AppCompatActivity {
                     Timestamp date = (Timestamp) d.getData().get("order_date");
                     Date dateDate = date.toDate();
                     dateValue = dateDate.toString();
-                    priceValue = d.getData().get("total").toString();
+                    double priceDouble = (double) d.getData().get("total");
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    priceValue = String.valueOf(Double.valueOf(df.format(priceDouble)));
                     addressValue = d.getData().get("address").toString();
 
 
@@ -140,8 +146,9 @@ public class OrderDetailsActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     orderIdText.setText(orderIdValue);
                     date.setText(dateValue);
-                    price.setText(priceValue);
+                    price.setText("$"+priceValue);
                     address.setText(addressValue);
+                    progressdialog.dismiss();
                     setAdapter();
                 });
     }
@@ -155,7 +162,9 @@ public class OrderDetailsActivity extends AppCompatActivity {
                     Timestamp date = (Timestamp) d.getData().get("order_date");
                     Date dateDate = date.toDate();
                     dateValue = dateDate.toString();
-                    priceValue = d.getData().get("total").toString();
+                    double priceDouble = (double) d.getData().get("total");
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    priceValue = String.valueOf(Double.valueOf(df.format(priceDouble)));
                     addressValue = d.getData().get("address").toString();
                     feedbackValue = d.getData().get("feedback").toString();
                     ArrayList<Map<String, Object>> arrayItem = (ArrayList<Map<String, Object>>) d.getData().get("items");

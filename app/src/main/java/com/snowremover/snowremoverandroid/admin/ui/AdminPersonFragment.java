@@ -1,6 +1,7 @@
 
 package com.snowremover.snowremoverandroid.admin.ui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -135,6 +136,8 @@ public class AdminPersonFragment extends Fragment {
     }
 
     private void setProductsInfo() {
+        ProgressDialog progressdialog = new ProgressDialog(getContext());
+        progressdialog.show();
         firestore.collection("person").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -156,6 +159,7 @@ public class AdminPersonFragment extends Fragment {
                 }).addOnFailureListener(e -> Toast.makeText(getContext(), "Fail to get the data.", Toast.LENGTH_SHORT).show())
                 .addOnCompleteListener(task -> {
                     copyItemData.addAll(productItemData);
+                    progressdialog.dismiss();
                     setAdapter();
                 });
     }

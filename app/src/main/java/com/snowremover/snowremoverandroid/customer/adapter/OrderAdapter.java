@@ -21,6 +21,7 @@ import com.snowremover.snowremoverandroid.customer.model.OrderModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder>{
     private ArrayList<OrderModel> orderData;

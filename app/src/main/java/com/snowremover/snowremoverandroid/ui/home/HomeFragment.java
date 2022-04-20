@@ -1,5 +1,6 @@
 package com.snowremover.snowremoverandroid.ui.home;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -173,6 +174,8 @@ public class HomeFragment extends Fragment {
 
 
     private void setProductsInfo() {
+        ProgressDialog progressdialog = new ProgressDialog(getContext());
+        progressdialog.show();
         firestore.collection("products").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -199,6 +202,7 @@ public class HomeFragment extends Fragment {
                 }).addOnFailureListener(e -> Toast.makeText(getContext(), "Fail to get the data.", Toast.LENGTH_SHORT).show())
                 .addOnCompleteListener(task -> {
                     copyItemData.addAll(productItemData);
+                    progressdialog.dismiss();
                     setAdapter();
                 });
 
@@ -252,6 +256,7 @@ public class HomeFragment extends Fragment {
 
     protected class getWeather extends AsyncTask<Void, Void, JSONObject>
     {
+
         String str="https://api.openweathermap.org/data/2.5/weather?q=montreal&appid=96d2ff9494ffe7aa56ac22dc7570cfa1";
         String IMG_URL = "https://openweathermap.org/img/w/";
         @Override

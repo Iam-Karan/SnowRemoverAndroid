@@ -3,6 +3,7 @@ package com.snowremover.snowremoverandroid.ui.person;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -142,6 +143,8 @@ public class PersonFragment extends Fragment {
     }
 
     private void setPersonsInfo(){
+        ProgressDialog progressdialog = new ProgressDialog(getContext());
+        progressdialog.show();
         firestore.collection("person").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -167,6 +170,7 @@ public class PersonFragment extends Fragment {
                 }).addOnFailureListener(e -> Toast.makeText(getContext(), "Fail to get the data.", Toast.LENGTH_SHORT).show())
                 .addOnCompleteListener(task -> {
                     copyItemData.addAll(productItemData);
+                    progressdialog.dismiss();
                     setAdapter();
                 });
 
