@@ -113,8 +113,6 @@ public class OrderDetailsActivity extends AppCompatActivity {
     }
 
     public void setData(){
-        ProgressDialog progressdialog = new ProgressDialog(getApplicationContext());
-        progressdialog.show();
         firestore.collection("users").document(uId).collection("order").document(orderID).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     DocumentSnapshot d = documentSnapshot;
@@ -148,7 +146,6 @@ public class OrderDetailsActivity extends AppCompatActivity {
                     date.setText(dateValue);
                     price.setText("$"+priceValue);
                     address.setText(addressValue);
-                    progressdialog.dismiss();
                     setAdapter();
                 });
     }

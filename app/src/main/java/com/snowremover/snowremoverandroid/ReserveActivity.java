@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import com.google.firebase.Timestamp;
 
@@ -25,6 +26,7 @@ public class ReserveActivity extends AppCompatActivity {
 
     private TextView reserveDate, reserveTime;
     private AppCompatButton order;
+    private ImageButton backButton;
     LocalDate localDate;
     LocalTime localTime;
     String dateString, typeString, totalString, idString, hoursString, quantityString;
@@ -33,6 +35,7 @@ public class ReserveActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_reserve);
 
         Intent intent = getIntent();
         typeString = intent.getExtras().getString("type");
@@ -42,7 +45,7 @@ public class ReserveActivity extends AppCompatActivity {
         hoursString = intent.getExtras().getString("hours");
         quantityString = intent.getExtras().getString("quantity");
 
-        setContentView(R.layout.activity_reserve);
+        backButton = findViewById(R.id.back_button);
         reserveDate = findViewById(R.id.reserve_date);
         reserveTime = findViewById(R.id.reserve_time);
         order = findViewById(R.id.reserve_order);
@@ -84,5 +87,7 @@ public class ReserveActivity extends AppCompatActivity {
             startActivity(orderIntent);
 
         });
+
+        backButton.setOnClickListener(view -> onBackPressed());
     }
 }

@@ -125,8 +125,6 @@ public class PersonDetailActivity extends AppCompatActivity {
     }
 
     public void setData(){
-        ProgressDialog progressdialog = new ProgressDialog(getApplicationContext());
-        progressdialog.show();
         DocumentReference docRef = firestore.collection("person").document(personId);
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -155,7 +153,6 @@ public class PersonDetailActivity extends AppCompatActivity {
                 Log.d("error", "get failed with ", task.getException());
             }
         }).addOnFailureListener(e -> Log.d("error", e.toString()));
-        progressdialog.dismiss();
         if(mFirebaseUser !=  null){
             uId = mFirebaseUser.getUid();
             firestore.collection("users").document(uId).collection("favorite").get()

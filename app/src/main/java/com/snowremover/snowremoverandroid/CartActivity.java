@@ -76,8 +76,6 @@ public class CartActivity extends AppCompatActivity {
         }
 
         backButton.setOnClickListener(view -> onBackPressed());
-
-
     }
 
     private void findID(){
@@ -103,8 +101,6 @@ public class CartActivity extends AppCompatActivity {
     }
 
     private void setCartInfo(){
-        ProgressDialog progressdialog = new ProgressDialog(getApplicationContext());
-        progressdialog.show();
         firestore.collection("users").document(uId).collection("cart").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -131,7 +127,6 @@ public class CartActivity extends AppCompatActivity {
                     }
                 }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Fail to get the data.", Toast.LENGTH_SHORT).show())
                 .addOnCompleteListener(task -> {
-                    progressdialog.dismiss();
                     setAdapter();
                 });
     }

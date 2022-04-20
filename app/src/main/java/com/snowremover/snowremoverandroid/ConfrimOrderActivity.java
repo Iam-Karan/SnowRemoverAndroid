@@ -122,8 +122,6 @@ public class ConfrimOrderActivity extends AppCompatActivity {
     }
 
     public void getData(){
-        ProgressDialog progressdialog = new ProgressDialog(getApplicationContext());
-        progressdialog.show();
         if(typeString.equals("cart")){
             firestore.collection("users").document(uId).collection("cart").get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -210,7 +208,6 @@ public class ConfrimOrderActivity extends AppCompatActivity {
                         }
                     }).addOnFailureListener(e -> Log.d("error", e.toString()));
         }
-        progressdialog.dismiss();
         paymentConfigiration();
     }
 
@@ -423,7 +420,6 @@ public class ConfrimOrderActivity extends AppCompatActivity {
         double intTotal = totoalValue * 100;
         int totalInt = (int) intTotal;
         String finalTotal = String.valueOf(totalInt);
-        Toast.makeText(getApplicationContext(), finalTotal, Toast.LENGTH_LONG).show();
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 "https://api.stripe.com/v1/payment_intents",
                 new Response.Listener<String>() {
