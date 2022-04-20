@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,15 +52,18 @@ public class CartAdapterRecyclerView extends RecyclerView.Adapter<CartAdapterRec
     public class CartViewHolder extends RecyclerView.ViewHolder{
         private MaterialCardView card;
         private ImageView image;
-        private TextView name, quantity;
-        private AppCompatButton remove;
+        private TextView name, quantity, quntityText;
+        private ImageButton remove, addItem, removeItem;
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.cart_product_image);
             name = itemView.findViewById(R.id.cart_product_name);
             quantity = itemView.findViewById(R.id.cart_product_quntity);
+            quntityText = itemView.findViewById(R.id.cart_product_quntity_text);
             remove = itemView.findViewById(R.id.cart_product_remove);
             card = itemView.findViewById(R.id.cart_card);
+            addItem = itemView.findViewById(R.id.product_count_add);
+            removeItem = itemView.findViewById(R.id.product_count_remove);
             context = itemView.getContext();
         }
     }
@@ -77,8 +81,9 @@ public class CartAdapterRecyclerView extends RecyclerView.Adapter<CartAdapterRec
         String priceString = cartProductData.get(position).getQuantity();
         holder.name.setText(itemName);
 
-        if(cartProductData.get(position).getType().equals("person")){
-            holder.quantity.setText("");
+        if(!cartProductData.get(position).getType().equals("products")){
+            holder.quntityText.setText("Hours:");
+            holder.quantity.setText(cartProductData.get(position).getHour());
             StorageReference storageReference =  FirebaseStorage.getInstance().getReference(cartProductData.get(position).getImageUrl());
 
             storageReference.getDownloadUrl().addOnSuccessListener(uri ->
@@ -92,7 +97,8 @@ public class CartAdapterRecyclerView extends RecyclerView.Adapter<CartAdapterRec
                 view.getContext().startActivity(intent);
             });
         }else {
-            holder.quantity.setText("Quantity : "+priceString);
+            holder.quntityText.setText("Quantity:");
+            holder.quantity.setText(cartProductData.get(position).getQuantity());
             StorageReference storageReference =  FirebaseStorage.getInstance().getReference(cartProductData.get(position).getImageUrl());
 
             storageReference.getDownloadUrl().addOnSuccessListener(uri ->
@@ -106,6 +112,10 @@ public class CartAdapterRecyclerView extends RecyclerView.Adapter<CartAdapterRec
                 view.getContext().startActivity(intent);
             });
         }
+
+        holder.addItem.setOnClickListener(view -> increaseItem(position));
+
+        holder.removeItem.setOnClickListener(view -> decreaseItem(position, context));
 
         holder.remove.setOnClickListener(view -> {
             copyData.remove(position);
@@ -125,9 +135,56 @@ public class CartAdapterRecyclerView extends RecyclerView.Adapter<CartAdapterRec
         firestore.collection("users").document(uId).collection("cart").document(prductId)
                 .delete()
                 .addOnSuccessListener(unused -> {
-                    Toast.makeText(context, "Item removed From Favourite successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Item removed From Cart successfully!", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> Log.w("error", e.toString()));
+    }
+
+    public void increaseItem(int index){
+        int quntity = 0;
+        String productId = cartProductData.get(index).getId();
+        if(cartProductData.get(index).getType().equals("products")){
+            String quantityString = cartProductData.get(index).getQuantity();
+            quntity = Integer.parseInt(quantityString);
+            quntity = quntity + 1;
+            cartProductData.get(index).setQuantity(""+quntity);
+            firestore.collection("users").document(uId).collection("cart").document(productId).update("quantity",quntity);
+        }else {
+            String quantityString = cartProductData.get(index).getHour();
+            quntity = Integer.parseInt(quantityString);
+            quntity = quntity + 1;
+            cartProductData.get(index).setHour(""+quntity);
+            firestore.collection("users").document(uId).collection("cart").document(productId).update("hours",quntity);
+        }
+        notifyDataSetChanged();
+    }
+    public void decreaseItem(int index, Context context){
+        int quntity = 0;
+        String productId = cartProductData.get(index).getId();
+        if(cartProductData.get(index).getType().equals("products")){
+            String quantityString = cartProductData.get(index).getQuantity();
+            quntity = Integer.parseInt(quantityString);
+            if(quntity == 1){
+                copyData.remove(index);
+                removeItemCart(productId,context);
+            }else {
+                quntity = quntity - 1;
+                cartProductData.get(index).setQuantity(""+quntity);
+                firestore.collection("users").document(uId).collection("cart").document(productId).update("quantity",quntity);
+            }
+        }else {
+            String quantityString = cartProductData.get(index).getHour();
+            quntity = Integer.parseInt(quantityString);
+            if(quntity == 1){
+                copyData.remove(index);
+                removeItemCart(productId, context);
+            }else {
+                quntity = quntity - 1;
+                cartProductData.get(index).setHour(""+quntity);
+                firestore.collection("users").document(uId).collection("cart").document(productId).update("hours",quntity);
+            }
+        }
+        notifyDataSetChanged();
     }
 
 

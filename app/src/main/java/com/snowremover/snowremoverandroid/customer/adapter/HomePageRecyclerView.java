@@ -3,6 +3,7 @@ package com.snowremover.snowremoverandroid.customer.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,6 +115,17 @@ public class HomePageRecyclerView extends RecyclerView.Adapter<HomePageRecyclerV
         for(ProductData item: itemsCopy){
             if(item.numOfUnit > 0){
                 productItemData.add(item);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public void favorite(ArrayList<String> favouriteItems, ArrayList<ProductData> itemsCopy){
+        productItemData.clear();
+        for(int i = 0; i < itemsCopy.size(); i++){
+            if(favouriteItems.contains(itemsCopy.get(i).getId())){
+                Log.d("fav id", itemsCopy.get(i).getId());
+                productItemData.add(itemsCopy.get(i));
             }
         }
         notifyDataSetChanged();

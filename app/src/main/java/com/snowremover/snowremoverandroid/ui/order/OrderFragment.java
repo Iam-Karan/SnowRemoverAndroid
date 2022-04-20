@@ -2,6 +2,7 @@ package com.snowremover.snowremoverandroid.ui.order;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -17,7 +18,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +36,10 @@ import com.snowremover.snowremoverandroid.customer.model.OrdrItemModel;
 import com.snowremover.snowremoverandroid.R;
 import com.snowremover.snowremoverandroid.SignInScreen;
 import com.snowremover.snowremoverandroid.UserProfileActivity;
+
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +52,7 @@ public class OrderFragment extends Fragment {
     private final String userNameValue = "Customer";
     private TextView userName, numberOfItemCart;
     private ImageButton cartBtn;
+    private ImageView emptyCart;
     private FirebaseUser mFirebaseUser;
     private FirebaseFirestore firestore;
     private String uId;
@@ -73,7 +80,7 @@ public class OrderFragment extends Fragment {
         }
 
         getUi(view);
-
+        emptyCart.setVisibility(View.VISIBLE);
         cartBtn.setOnClickListener(view12 -> {
             Intent intent = new Intent(getContext(), CartActivity.class);
             startActivity(intent);
@@ -105,6 +112,7 @@ public class OrderFragment extends Fragment {
         cartBtn = view.findViewById(R.id.order_cart_btn);
         numberOfItemCart = view.findViewById(R.id.order_cart_item_number);
         ordrRecyclerView = view.findViewById(R.id.order_recyclerview);
+        emptyCart = view.findViewById(R.id.emptyOrder);
     }
 
     private void setAdapter() {
@@ -139,7 +147,6 @@ public class OrderFragment extends Fragment {
                         if(Objects.requireNonNull(task.getResult()).size() > 0) {
                             for (DocumentSnapshot document : task.getResult()) {
                                 if (document.exists()) {
-                                    Log.d("productId", document.getId());
                                     productIds.add(document.getId());
                                 }
                             }
@@ -156,19 +163,27 @@ public class OrderFragment extends Fragment {
     }
 
     public void setOrder(){
+        ProgressDialog progressdialog = new ProgressDialog(getContext());
+        progressdialog.show();
         firestore.collection("users").document(uId).collection("order").get()
                 .addOnSuccessListener(queryDocumentSnapshots1 -> {
                     if (!queryDocumentSnapshots1.isEmpty()) {
 
                         List<DocumentSnapshot> list1 = queryDocumentSnapshots1.getDocuments();
+                        if(!list1.isEmpty()){
+                            emptyCart.setVisibility(View.GONE);
+                        }
                         for (DocumentSnapshot d : list1) {
                             ArrayList<OrdrItemModel> orderitemtDataArrayList = new ArrayList<>();
                             String id = d.getId();
 
-                            Timestamp date = (Timestamp) d.getData().get("order_date");
+                            Timestamp date = (Timestamp) d.getData().get("reservation_datetime");
                             Date dateDate = date.toDate();
                             String dateString = dateDate.toString();
-                            String price = d.getData().get("total").toString();
+                            double priceDouble = (double) d.getData().get("total");
+                            DecimalFormat df = new DecimalFormat("#.##");
+
+                            String price = String.valueOf(Double.valueOf(df.format(priceDouble)));
                             String imageUrl = "https://i.dlpng.com/static/png/6728131_preview.png";
 
                             ArrayList<Map<String, Object>> arrayItem = (ArrayList<Map<String, Object>>) d.getData().get("items");
@@ -187,6 +202,14 @@ public class OrderFragment extends Fragment {
                             int count = arrayItem.size();
                             String countString = String.valueOf(count);
 
+                            Date currentTime = Calendar.getInstance().getTime();
+                            int result = dateDate.compareTo(currentTime);
+                            if (result < 0) {
+                                isOrderd = true;
+                            } else {
+                                isOrderd = false;
+                            }
+
                             OrderModel data = new OrderModel(id, dateString, countString, price, imageUrl, isOrderd, orderitemtDataArrayList);
                             orderData.add(data);
                         }
@@ -196,16 +219,8 @@ public class OrderFragment extends Fragment {
                     }
                 }).addOnFailureListener(e -> Toast.makeText(getContext(), "Fail to get the data.", Toast.LENGTH_SHORT).show())
             .addOnSuccessListener(queryDocumentSnapshots -> {
-                 for(int i = 0; i < orderData.size(); i++){
-
-                    int finalI = i;
-                    Log.d("id", orderData.get(i).getId());
-                    firestore.collection("orders").document(orderData.get(i).getId()).get().addOnSuccessListener(documentSnapshot -> {
-                        isOrderd = (boolean) documentSnapshot.getData().get("isDelivered");
-                        orderData.get(finalI).setDeliver(isOrderd);
-                    }).addOnFailureListener(e -> Log.d("error", e.toString()))
-                            .addOnCompleteListener(task -> setAdapter());
-                }
+                progressdialog.dismiss();
+                setAdapter();
             });
 
     }

@@ -74,60 +74,24 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/cart_product_quntity_text"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/cart_product_quntity"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:text="Hour:"
                             android:textSize="20sp"
                             android:textColor="@color/white"
                             android:textStyle="bold"/>
 
-
-                        <LinearLayout
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/cart_product_remove"
                             android:layout_weight="1"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_horizontal">
-
-                            <ImageButton
-                                android:id="@+id/product_count_remove"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:src="@drawable/ic_round_remove_24"
-                                android:background="@drawable/product_description_buttun_bg"
-                                android:layout_gravity="center_vertical"/>
-
-                            <TextView
-                                android:layout_gravity="center_horizontal"
-                                android:id="@+id/cart_product_quntity"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="10dp"
-                                android:layout_marginLeft="10dp"
-                                android:textColor="@color/white"
-                                android:text="1"
-                                android:inputType="number"
-                                android:textSize="36dp" />
-
-                            <ImageButton
-                                android:id="@+id/product_count_add"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:src="@drawable/ic_round_add_24"
-                                android:background="@drawable/product_description_buttun_bg"
-                                android:layout_gravity="center_vertical"/>
-
-                        </LinearLayout>
-
+                            android:text="remove"
+                            android:textColor="@color/white"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/pink_round_btn"/>
                     </LinearLayout>
-
-                    <ImageButton
-                        android:id="@+id/cart_product_remove"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/ic_round_delete_24"
-                        android:background="@drawable/pink_round_btn"/>
 
                 </LinearLayout>
 

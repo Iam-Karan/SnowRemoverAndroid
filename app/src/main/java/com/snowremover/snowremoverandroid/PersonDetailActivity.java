@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -124,7 +125,8 @@ public class PersonDetailActivity extends AppCompatActivity {
     }
 
     public void setData(){
-
+        ProgressDialog progressdialog = new ProgressDialog(getApplicationContext());
+        progressdialog.show();
         DocumentReference docRef = firestore.collection("person").document(personId);
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -153,7 +155,7 @@ public class PersonDetailActivity extends AppCompatActivity {
                 Log.d("error", "get failed with ", task.getException());
             }
         }).addOnFailureListener(e -> Log.d("error", e.toString()));
-
+        progressdialog.dismiss();
         if(mFirebaseUser !=  null){
             uId = mFirebaseUser.getUid();
             firestore.collection("users").document(uId).collection("favorite").get()
@@ -176,7 +178,6 @@ public class PersonDetailActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Task Fails to get Favourite products", Toast.LENGTH_SHORT).show();
                         }
                     });
-
             firestore.collection("users").document(uId).collection("cart").document(personId).get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {

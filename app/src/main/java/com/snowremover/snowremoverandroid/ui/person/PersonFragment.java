@@ -3,6 +3,7 @@ package com.snowremover.snowremoverandroid.ui.person;
 import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,8 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.snowremover.snowremoverandroid.customer.adapter.HomePageRecyclerView;
@@ -36,6 +39,7 @@ public class PersonFragment extends Fragment {
     private PersonViewModel mViewModel;
     private ArrayList<ProductData> productItemData = new ArrayList<>();
     private ArrayList<ProductData> copyItemData = new ArrayList<>();
+    private ArrayList<String> favouriteItems = new ArrayList<>();
     private RecyclerView personRecyclerView;
     FirebaseFirestore firestore;
     HomePageRecyclerView adapter;
@@ -94,6 +98,20 @@ public class PersonFragment extends Fragment {
         dropdownMenu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(i == 0){
+                    productItemData.clear();
+                    productItemData.addAll(copyItemData);
+                    setAdapter();
+                }
+                if(i == 1){
+                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                    FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
+                    if(mFirebaseUser != null){
+                        adapter.favorite(favouriteItems, copyItemData);
+                    }else {
+                        Toast.makeText(getContext(), "You need to login first", Toast.LENGTH_SHORT).show();
+                    }
+                }
                 if(i == 2){
                     adapter.available(copyItemData);
                 }
@@ -125,6 +143,8 @@ public class PersonFragment extends Fragment {
     }
 
     private void setPersonsInfo(){
+        ProgressDialog progressdialog = new ProgressDialog(getContext());
+        progressdialog.show();
         firestore.collection("person").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -150,8 +170,33 @@ public class PersonFragment extends Fragment {
                 }).addOnFailureListener(e -> Toast.makeText(getContext(), "Fail to get the data.", Toast.LENGTH_SHORT).show())
                 .addOnCompleteListener(task -> {
                     copyItemData.addAll(productItemData);
+                    progressdialog.dismiss();
                     setAdapter();
                 });
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
+        if(mFirebaseUser != null){
+            String uId = mFirebaseUser.getUid();
+
+            firestore.collection("users").document(uId).collection("favorite").get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            if(Objects.requireNonNull(task.getResult()).size() > 0) {
+                                for (DocumentSnapshot document : task.getResult()) {
+                                    if (document.exists()) {
+                                        String docId = document.getId();
+                                        favouriteItems.add(docId);
+                                    }
+                                }
+                            } else {
+
+                            }
+                        } else {
+                            Toast.makeText(getContext(), "Task Fails to get Favourite products", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
     }
 
     @Override

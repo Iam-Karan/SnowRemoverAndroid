@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -72,7 +73,6 @@ public class CartActivity extends AppCompatActivity {
         }else {
             cartLayout.setVisibility(View.GONE);
             errorLayout.setVisibility(View.VISIBLE);
-            errorText. setText("No data found!");
         }
 
         backButton.setOnClickListener(view -> onBackPressed());
@@ -103,6 +103,8 @@ public class CartActivity extends AppCompatActivity {
     }
 
     private void setCartInfo(){
+        ProgressDialog progressdialog = new ProgressDialog(getApplicationContext());
+        progressdialog.show();
         firestore.collection("users").document(uId).collection("cart").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
@@ -128,7 +130,10 @@ public class CartActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "No data found in Database", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Fail to get the data.", Toast.LENGTH_SHORT).show())
-                .addOnCompleteListener(task -> setAdapter());
+                .addOnCompleteListener(task -> {
+                    progressdialog.dismiss();
+                    setAdapter();
+                });
     }
 
     public void reserveProduct(){

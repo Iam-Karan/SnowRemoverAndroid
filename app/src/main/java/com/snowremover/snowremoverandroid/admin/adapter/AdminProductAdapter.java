@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -68,7 +69,7 @@ public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapte
     @NonNull
     @Override
     public AdminProductAdapter.CartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.cart_screen_card, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.admin_home_card, parent, false);
         return new AdminProductAdapter.CartViewHolder(itemView);
     }
 
