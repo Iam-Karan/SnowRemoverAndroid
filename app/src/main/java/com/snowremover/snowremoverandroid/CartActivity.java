@@ -75,7 +75,10 @@ public class CartActivity extends AppCompatActivity {
             errorLayout.setVisibility(View.VISIBLE);
         }
 
-        backButton.setOnClickListener(view -> onBackPressed());
+        backButton.setOnClickListener(view -> {
+            Intent intent = new Intent(getBaseContext(), HomeScreen.class);
+            startActivity(intent);
+        });
     }
 
     private void findID(){

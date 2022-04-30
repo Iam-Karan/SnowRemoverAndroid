@@ -76,7 +76,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Feedback"
+                android:text="Message"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:textStyle="bold"/>
@@ -85,7 +85,7 @@
                 android:id="@+id/admin_feedback_feedback"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Feedback"
+                android:text="Message"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 

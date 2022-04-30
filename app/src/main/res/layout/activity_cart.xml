@@ -96,30 +96,30 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:visibility="visible"
         android:id="@+id/cart_error_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center">
+        android:gravity="center"
+        android:visibility="visible">
 
-        
+
         <ImageView
             android:id="@+id/emptycart"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:src="@drawable/emptycart"
-            android:scaleType="center"/>
-        
+            android:scaleType="center"
+            android:src="@drawable/emptycart" />
+
         <TextView
-            android:layout_below="@+id/emptycart"
             android:id="@+id/cart_error_text"
-            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/emptycart"
+            android:gravity="center"
             android:text="There are no items in cart."
-            android:textSize="18sp"
             android:textColor="@color/inactivecolor"
-            android:textStyle="bold"/>
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 

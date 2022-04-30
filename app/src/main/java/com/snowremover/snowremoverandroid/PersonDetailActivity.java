@@ -84,10 +84,10 @@ public class PersonDetailActivity extends AppCompatActivity {
             reserveProduct.setOnClickListener(view -> orderProductFunc("reserve"));
         }else {
             addFavourite.setOnClickListener(view -> toastLogin());
-
             removeFavourite.setOnClickListener(view -> toastLogin());
-
             addtoCart.setOnClickListener(view -> toastLogin());
+            orderProduct.setOnClickListener(view -> toastLogin());
+            reserveProduct.setOnClickListener(view -> toastLogin());
         }
 
         addProduct.setOnClickListener(view -> {
@@ -103,7 +103,8 @@ public class PersonDetailActivity extends AppCompatActivity {
         });
 
         backButton.setOnClickListener(view -> {
-            onBackPressed();
+            Intent intent2 = new Intent(getBaseContext(), HomeScreen.class);
+            startActivity(intent2);
         });
     }
     public void findID(){

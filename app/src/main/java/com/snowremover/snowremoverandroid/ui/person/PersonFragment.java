@@ -67,19 +67,21 @@ public class PersonFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                adapter.search(s, copyItemData);
+                adapter.personSearch(s, copyItemData);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                adapter.search(s, copyItemData);
+                if(s != null && !copyItemData.isEmpty()){
+                    adapter.personSearch(s, copyItemData);
+                }
                 return true;
             }
         });
 
         searchView.setOnCloseListener(() -> {
-            adapter.search("", copyItemData);
+            adapter.personSearch("", copyItemData);
             return false;
         });
 
@@ -107,7 +109,7 @@ public class PersonFragment extends Fragment {
                     FirebaseAuth mAuth = FirebaseAuth.getInstance();
                     FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
                     if(mFirebaseUser != null){
-                        adapter.favorite(favouriteItems, copyItemData);
+                        adapter.favorite(copyItemData, favouriteItems);
                     }else {
                         Toast.makeText(getContext(), "You need to login first", Toast.LENGTH_SHORT).show();
                     }
@@ -143,6 +145,10 @@ public class PersonFragment extends Fragment {
     }
 
     private void setPersonsInfo(){
+        favouriteItems.clear();
+        productItemData.clear();
+        copyItemData.clear();
+
         ProgressDialog progressdialog = new ProgressDialog(getContext());
         progressdialog.show();
         firestore.collection("person").get()
@@ -189,8 +195,6 @@ public class PersonFragment extends Fragment {
                                         favouriteItems.add(docId);
                                     }
                                 }
-                            } else {
-
                             }
                         } else {
                             Toast.makeText(getContext(), "Task Fails to get Favourite products", Toast.LENGTH_SHORT).show();

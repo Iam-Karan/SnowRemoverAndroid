@@ -9,12 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.snowremover.snowremoverandroid.PersonDetailActivity;
@@ -25,6 +30,7 @@ import com.snowremover.snowremoverandroid.customer.model.ProductData;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 
 public class HomePageRecyclerView extends RecyclerView.Adapter<HomePageRecyclerView.MyViewHolder> {
 
@@ -97,12 +103,27 @@ public class HomePageRecyclerView extends RecyclerView.Adapter<HomePageRecyclerV
 
     public void search(String text, ArrayList<ProductData> itemsCopy) {
         productItemData.clear();
-        if(text.isEmpty()){
+        if(text.isEmpty() || text == null){
             productItemData.addAll(itemsCopy);
         } else{
             text = text.toLowerCase();
             for(ProductData item: itemsCopy){
                 if(item.name.toLowerCase().contains(text) || item.type.toLowerCase().contains(text)){
+                    productItemData.add(item);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public void personSearch(String text, ArrayList<ProductData> itemsCopy) {
+        productItemData.clear();
+        if(text.isEmpty() || text == null){
+            productItemData.addAll(itemsCopy);
+        } else{
+            text = text.toLowerCase();
+            for(ProductData item: itemsCopy){
+                if(item.name.toLowerCase().contains(text)){
                     productItemData.add(item);
                 }
             }
@@ -120,11 +141,11 @@ public class HomePageRecyclerView extends RecyclerView.Adapter<HomePageRecyclerV
         notifyDataSetChanged();
     }
 
-    public void favorite(ArrayList<String> favouriteItems, ArrayList<ProductData> itemsCopy){
+    public void favorite(ArrayList<ProductData> itemsCopy, ArrayList<String> favId){
         productItemData.clear();
+        Log.d("favid", favId.get(0));
         for(int i = 0; i < itemsCopy.size(); i++){
-            if(favouriteItems.contains(itemsCopy.get(i).getId())){
-                Log.d("fav id", itemsCopy.get(i).getId());
+            if(favId.contains(itemsCopy.get(i).getId())){
                 productItemData.add(itemsCopy.get(i));
             }
         }

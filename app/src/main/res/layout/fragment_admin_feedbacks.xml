@@ -43,6 +43,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="40dp"
+        android:layout_marginBottom="?actionBarSize"
         android:id="@+id/admin_feedback_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -30,7 +30,9 @@ import com.snowremover.snowremoverandroid.customer.model.OrdrItemModel;
 import com.snowremover.snowremoverandroid.R;
 import com.snowremover.snowremoverandroid.UserProfileActivity;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -173,12 +175,14 @@ public class AdminOrdersFragment extends Fragment {
                             ArrayList<OrdrItemModel> orderitemtDataArrayList = new ArrayList<>();
                             String id = d.getId();
 
-                            Timestamp date = (Timestamp) d.getData().get("order_date");
+                            Timestamp date = (Timestamp) d.getData().get("reservation_datetime");
                             Date dateDate = date.toDate();
                             String dateString = dateDate.toString();
-                            String price = d.getData().get("total").toString();
+                            double priceDouble = (double) d.getData().get("total");
+                            DecimalFormat df = new DecimalFormat("#.##");
+                            String price = String.valueOf(Double.valueOf(df.format(priceDouble)));;
                             String imageUrl = "https://i.dlpng.com/static/png/6728131_preview.png";
-                            isOrderd = (boolean) d.getData().get("isDelivered");
+
                             ArrayList<Map<String, Object>> arrayItem = (ArrayList<Map<String, Object>>) d.getData().get("items");
                             for(int i = 0; i < arrayItem.size(); i++){
                                 String itemHour = arrayItem.get(i).get("hour").toString();
@@ -195,6 +199,13 @@ public class AdminOrdersFragment extends Fragment {
                             int count = arrayItem.size();
                             String countString = String.valueOf(count);
 
+                            Date currentTime = Calendar.getInstance().getTime();
+                            int result = dateDate.compareTo(currentTime);
+                            if (result < 0) {
+                                isOrderd = true;
+                            } else {
+                                isOrderd = false;
+                            }
                             OrderModel data = new OrderModel(id, dateString, countString, price, imageUrl, isOrderd, orderitemtDataArrayList);
                             orderData.add(data);
                         }

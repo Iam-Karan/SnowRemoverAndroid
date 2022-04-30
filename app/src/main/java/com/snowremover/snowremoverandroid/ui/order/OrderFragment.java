@@ -180,9 +180,9 @@ public class OrderFragment extends Fragment {
                             Timestamp date = (Timestamp) d.getData().get("reservation_datetime");
                             Date dateDate = date.toDate();
                             String dateString = dateDate.toString();
+
                             double priceDouble = (double) d.getData().get("total");
                             DecimalFormat df = new DecimalFormat("#.##");
-
                             String price = String.valueOf(Double.valueOf(df.format(priceDouble)));
                             String imageUrl = "https://i.dlpng.com/static/png/6728131_preview.png";
 

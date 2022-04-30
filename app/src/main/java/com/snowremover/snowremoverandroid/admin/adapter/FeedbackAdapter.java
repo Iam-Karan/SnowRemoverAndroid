@@ -1,11 +1,13 @@
 package com.snowremover.snowremoverandroid.admin.adapter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
@@ -16,11 +18,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.snowremover.snowremoverandroid.R;
 import com.snowremover.snowremoverandroid.admin.model.FeedbackModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.FeedbackViewHolder>{
     private ArrayList<FeedbackModel> feedbacks;
@@ -85,20 +89,38 @@ public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.Feedba
     public void readFeedback(String id, boolean value){
         firestore = FirebaseFirestore.getInstance();
 
-        firestore.collection("contactMessages").document(id).update("read", value).addOnSuccessListener(unused -> {
-
-        }).addOnFailureListener(e -> {
-
-        }).addOnCompleteListener(task -> {
-            feedbacks.clear();
-            for(int i = 0; i < copyData.size(); i++){
-                if(value && copyData.get(i).isRead() != value){
-                    feedbacks.add(copyData.get(i));
-                }
-            }
-            notifyDataSetChanged();
+        firestore.collection("contactMessages").document(id).update("read", value).addOnCompleteListener(task -> {
+            setData(!value);
         });
 
+    }
+
+    private void setData(boolean radioIsRead){
+        feedbacks.clear();
+        copyData.clear();
+        firestore.collection("contactMessages").get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+
+                        List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
+                        for (DocumentSnapshot d : list) {
+
+                            String id = d.getId();
+                            String name = d.getData().get("name").toString();
+                            String email = d.getData().get("email").toString();
+                            String feedback = d.getData().get("message").toString();
+                            boolean isRead = (boolean) d.getData().get("read");
+
+                            FeedbackModel model = new FeedbackModel(id, name, email, feedback, isRead);
+                            if(radioIsRead == isRead){
+                                feedbacks.add(model);
+                            }
+                            copyData.add(model);
+                        }
+                    }
+                }).addOnCompleteListener(task -> {
+                notifyDataSetChanged();
+                });
     }
 
 }

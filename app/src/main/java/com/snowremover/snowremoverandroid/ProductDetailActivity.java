@@ -96,10 +96,10 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         }else {
             addFavourite.setOnClickListener(view -> toastLogin());
-
             removeFavourite.setOnClickListener(view -> toastLogin());
-
             addtoCart.setOnClickListener(view -> toastLogin());
+            orderProduct.setOnClickListener(view -> toastLogin());
+            reserveProduct.setOnClickListener(view -> toastLogin());
         }
 
         addProduct.setOnClickListener(view -> {
@@ -119,7 +119,10 @@ public class ProductDetailActivity extends AppCompatActivity {
             youTubePlayerView.setVisibility(View.VISIBLE);
         });
 
-        backButton.setOnClickListener(view -> onBackPressed());
+        backButton.setOnClickListener(view -> {
+            Intent intent2 = new Intent(getBaseContext(), HomeScreen.class);
+            startActivity(intent2);
+        });
 
     }
     public void findID(){

@@ -132,7 +132,7 @@ public class HomeFragment extends Fragment {
                     FirebaseAuth mAuth = FirebaseAuth.getInstance();
                     FirebaseUser mFirebaseUser = mAuth.getCurrentUser();
                     if(mFirebaseUser != null){
-                        adapter.favorite(favouriteItems, copyItemData);
+                        adapter.favorite(copyItemData, favouriteItems);
                     }else {
                         Toast.makeText(getContext(), "You need to login first", Toast.LENGTH_SHORT).show();
                     }
@@ -174,6 +174,10 @@ public class HomeFragment extends Fragment {
 
 
     private void setProductsInfo() {
+        favouriteItems.clear();
+        productItemData.clear();
+        copyItemData.clear();
+
         ProgressDialog progressdialog = new ProgressDialog(getContext());
         progressdialog.show();
         firestore.collection("products").get()
